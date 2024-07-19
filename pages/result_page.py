@@ -25,9 +25,9 @@ class ResultPage(QWidget):
             if widget:
                 widget.deleteLater()
 
-    def set_prediction_results(self, age_predictions, gender_predictions, detected_faces):
+    def set_prediction_results(self, age_predictions, gender_predictions, detected_faces, relation_predictions):
         self.clear_results_layout()
-
+        print(relation_predictions)
         row = 1
         for face_id, face_img in detected_faces.items():
             gender = gender_predictions[face_id]

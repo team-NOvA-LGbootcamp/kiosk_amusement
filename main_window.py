@@ -8,10 +8,11 @@ from pages.amusement_park_page import AmusementParkPage
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, model):
+    def __init__(self, model, relation_model):
         super().__init__()
 
         self.model = model
+        self.relation_model = relation_model
 
         # QStackedWidget 생성
         self.stacked_widget = QStackedWidget()
@@ -57,7 +58,13 @@ class MainWindow(QMainWindow):
     def show_result_page(self, detected_faces):
         self.camera_widget.stop_webcam()  # 웹캠 정지
         age_predictions, gender_predictions = self.model.predict_image(detected_faces)
-        self.result_page.set_prediction_results(age_predictions, gender_predictions, detected_faces)
+        # relation_predictions = self.relation_model.predict_image(detected_faces, age_predictions, gender_predictions)
+        relation_predictions = {
+                "friend": 0.75,
+                "family": 0.5,
+                "couple": 0.25,
+            }
+        self.result_page.set_prediction_results(age_predictions, gender_predictions, detected_faces, relation_predictions)
         self.stacked_widget.setCurrentWidget(self.result_page)
 
     def show_start_page(self):
