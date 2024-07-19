@@ -10,37 +10,66 @@ class Predictor:
 
         if env == "WINDOWS":
             from tensorflow.keras.models import load_model  # type: ignore
-            model_files = glob.glob(model_path + '/*.h5')
-            self.model = [load_model(file) for file in model_files]
+            model_files = glob.glob(model_path + '/*.h5')  # Ensure .h5 extension
+            self.models = [load_model(file) for file in model_files]
+
+            if not self.models:
+                raise ValueError("No models were loaded. Check the model path and file extensions.")
 
         elif env == "RASPBERRY":
             import tflite_runtime.interpreter as tflite  # type: ignore
-            # RASPBERRY 환경의 코드 생략
+            # Placeholder for Raspberry Pi model loading
+            self.models = None  # Replace with actual model loading logic
 
         print("\033[91mmodel is loaded\033[0m")
 
         self.IMG_SIZE = 224
 
-    def predict_image(self, img_list):
-        age_predictions = []
-        gender_predictions = []
+    def preprocess_image(self, img):
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = img / 255.0
+        img = cv2.resize(img, (self.IMG_SIZE, self.IMG_SIZE))
+        img = img.reshape(-1, self.IMG_SIZE, self.IMG_SIZE, 3)
+        return img
 
-        for img in img_list:
-            # Convert BGR to RGB
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img_normalized = img_rgb / 255.0  # Normalize the image
-            img_resized = cv2.resize(img_normalized, (self.IMG_SIZE, self.IMG_SIZE))
-            img_reshaped = img_resized.reshape(-1, self.IMG_SIZE, self.IMG_SIZE, 3)  # Reshape for model input
+    def predict_image(self, face_images):
+        all_age_predictions = {}
+        all_gender_predictions = {}
 
-            if self.env == "WINDOWS":
-                prediction_results = np.array([model.predict(img_reshaped, verbose=0) for model in self.model])
-                print(prediction_results)
-                result = np.round(np.squeeze(np.mean(prediction_results, axis=0)))
+        for face_id, images in face_images.items():
+            age_predictions = []
+            gender_predictions = []
+            print(f"{face_id}:{len(images)}")
+            for img in images:
+                preprocessed_img = self.preprocess_image(img)
 
-                age_predictions.append(round(result[0]))
-                gender_predictions.append(round(result[1]))
+                if self.env == "WINDOWS":
+                    prediction_results = []
+                    for model in self.models:
+                        pred = model.predict(preprocessed_img, verbose=0)
+                        prediction_results.append(pred)
 
-            # elif self.env == "RASPBERRY":
-            #     RASPBERRY 환경의 코드 생략
+                    prediction_results = np.array(prediction_results)
+                    mean_prediction = np.mean(prediction_results, axis=0).squeeze()
+                    print(f"{face_id}:{mean_prediction}")
+                    if mean_prediction.ndim == 1 and mean_prediction.size == 2:
+                        age_predictions.append(mean_prediction[0])
+                        gender_predictions.append(mean_prediction[1])
+                    else:
+                        raise ValueError("Unexpected shape of prediction results: ", mean_prediction.shape)
 
-        return age_predictions, gender_predictions
+                elif self.env == "RASPBERRY":
+                    # Placeholder for Raspberry Pi model predictions
+                    pass
+
+            if age_predictions and gender_predictions:
+                avg_age = np.mean(age_predictions)
+                avg_gender = np.mean(gender_predictions)
+                all_age_predictions[face_id] = round(avg_age)
+                all_gender_predictions[face_id] = round(avg_gender)
+
+        # Sorting the predictions by face_id
+        sorted_age_predictions = [all_age_predictions[face_id] for face_id in sorted(all_age_predictions.keys())]
+        sorted_gender_predictions = [all_gender_predictions[face_id] for face_id in sorted(all_gender_predictions.keys())]
+
+        return sorted_age_predictions, sorted_gender_predictions
