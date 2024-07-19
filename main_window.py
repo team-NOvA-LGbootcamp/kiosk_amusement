@@ -1,8 +1,11 @@
 import sys
+from recommendation import RecommendationAlgorithm
 from PyQt5.QtWidgets import QMainWindow, QStackedWidget
 from pages.camera_widget import CameraWidget
 from pages.start_page import StartPage
 from pages.result_page import ResultPage
+from pages.amusement_park_page import AmusementParkPage
+
 
 class MainWindow(QMainWindow):
     def __init__(self, model):
@@ -26,6 +29,10 @@ class MainWindow(QMainWindow):
         self.result_page = ResultPage()
         self.stacked_widget.addWidget(self.result_page)
 
+        # 네 번째 페이지 생성 및 추가 (amusement_park_page)
+        self.amusement_park_page = AmusementParkPage()
+        self.stacked_widget.addWidget(self.amusement_park_page)
+
         # 윈도우 설정
         self.setWindowTitle("Main Window")
         self.setGeometry(100, 100, 540, 960)
@@ -37,8 +44,10 @@ class MainWindow(QMainWindow):
         # CameraWidget의 switch_page 신호와 페이지 전환 연결
         self.camera_widget.switch_page.connect(self.show_result_page)
 
-        # ResultPage의 back 버튼 신호와 페이지 전환 연결
-        self.result_page.back_button.clicked.connect(self.show_start_page)
+        self.result_page.back_button.clicked.connect(self.show_amusement_park_page)
+
+        # # ResultPage의 back 버튼 신호와 페이지 전환 연결
+        # self.result_page.back_button.clicked.connect(self.show_start_page)
 
     def show_camera_page(self):
         self.stacked_widget.setCurrentWidget(self.camera_widget)
@@ -52,3 +61,6 @@ class MainWindow(QMainWindow):
 
     def show_start_page(self):
         self.stacked_widget.setCurrentWidget(self.start_page)
+
+    def show_amusement_park_page(self):
+        self.stacked_widget.setCurrentWidget(self.amusement_park_page)
