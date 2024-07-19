@@ -88,10 +88,10 @@ class RelationPredictor:
         self.IMG_SIZE = 224
 
     def preprocess_image(self, img):
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (self.IMG_SIZE, self.IMG_SIZE))
-        img = img.reshape(-1, self.IMG_SIZE, self.IMG_SIZE, 3)
-        return img
+        return np.array([img])
+
     def map_age(self,age):
         if age <= 4: return 0
         elif age <= 19: return 1
@@ -112,14 +112,20 @@ class RelationPredictor:
             face_image_2 = face_images[face_id2]
             face_image_1 = self.preprocess_image(face_image_1)
             face_image_2 = self.preprocess_image(face_image_2)
-            age1,age2= ages[face_id1], ages[face_id2]
-            gender1, gender2 = genders[face_id1],genders[face_id2]
+
+            age1, age2 = ages[face_id1], ages[face_id2]
             age1_mapped = self.map_age(age1)
             age2_mapped = self.map_age(age2)
-            metadata = [age1_mapped,age2_mapped,gender1,gender2]
-            
-            if self.env == "WINDOWS":
-                model_output = self.model.predict([face_image_1,face_image_2,metadata], verbose=0)
+
+            gender1, gender2 = genders[face_id1], genders[face_id2]
+
+            metadata = np.array([[age1_mapped, gender1, age2_mapped, gender2]], dtype='float32')
+
+            input_data = [face_image_1, face_image_2, metadata]
+
+            if self.env == "WINDOW":
+                model_output = self.model.predict(input_data, verbose=0)
+                
                 model_output = np.squeeze(model_output)
                 relation_proportion += model_output
 
