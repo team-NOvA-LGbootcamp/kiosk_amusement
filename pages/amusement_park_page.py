@@ -12,7 +12,7 @@ class AmusementParkPage(QWidget):
         self.layout.addLayout(self.results_layout)
 
         self.back_button = QPushButton("Back to Start Page")
-        self.back_button.clicked.connect(self.back_to_start_page)
+        # self.back_button.clicked.connect(self.back_to_start_page)
         self.layout.addWidget(self.back_button)
 
         self.text_space=300
@@ -92,5 +92,3 @@ class AmusementParkPage(QWidget):
         painter.setBrush(QColor(255,255,0))
         painter.drawEllipse(ride[0], ride[1]+self.text_space, size, size)
     
-    def back_to_start_page(self):
-        self.parentWidget().setCurrentIndex(0)  # Switch to start page

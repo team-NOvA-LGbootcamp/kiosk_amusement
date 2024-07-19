@@ -46,6 +46,7 @@ class MainWindow(QMainWindow):
 
         self.result_page.back_button.clicked.connect(self.show_amusement_park_page)
 
+        self.amusement_park_page.back_button.clicked.connect(self.show_start_page)
         # # ResultPage의 back 버튼 신호와 페이지 전환 연결
         # self.result_page.back_button.clicked.connect(self.show_start_page)
 
