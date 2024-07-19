@@ -101,6 +101,12 @@ class RelationPredictor:
         img = cv2.resize(img, (self.IMG_SIZE, self.IMG_SIZE))
         img = img.reshape(-1, self.IMG_SIZE, self.IMG_SIZE, 3)
         return img
+    def map_age(self,age):
+        if age <= 4: return 0
+        elif age <= 19: return 1
+        elif age <= 44: return 2
+        elif age <= 59: return 3
+        else: return 4
 
     def predict_image(self, face_images,ages,genders):
         if len(face_images.keys()) < 2:
@@ -115,8 +121,11 @@ class RelationPredictor:
             face_image_2 = face_images[face_id2]
             face_image_1 = self.preprocess_image(face_image_1)
             face_image_2 = self.preprocess_image(face_image_2)
-
-            metadata = [ages[face_id1], ages[face_id2], genders[face_id1],genders[face_id2]]
+            age1,age2= ages[face_id1], ages[face_id2]
+            gender1, gender2 = genders[face_id1],genders[face_id2]
+            age1_mapped = self.map_age(age1)
+            age2_mapped = self.map_age(age2)
+            metadata = [age1_mapped,age2_mapped,gender1,gender2]
             
             if self.env == "WINDOWS":
                 model_output = self.model.predict([face_image_1,face_image_2,metadata], verbose=0)
