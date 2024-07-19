@@ -4,16 +4,15 @@ from PyQt5.QtCore import Qt
 class StartPage(QWidget):
     def __init__(self):
         super().__init__()
-
         self.layout = QVBoxLayout()
 
         self.title_label = QLabel("DEMO", self)
+        self.title_label.setObjectName("title_label")
         self.title_label.setAlignment(Qt.AlignCenter)
-        self.title_label.setStyleSheet("font-size: 50px; font-weight: bold;")
         
 
         self.start_button = QPushButton("START", self)
-        self.start_button.setStyleSheet("font-size: 24px;")
+        self.start_button.setObjectName("start_button")
         
         self.layout.addWidget(self.title_label)
         self.layout.addWidget(self.start_button)

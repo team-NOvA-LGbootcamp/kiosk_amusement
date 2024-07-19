@@ -1,0 +1,73 @@
+/* 공통 스타일 */
+QWidget {
+    font-family: "HS산토끼체 2.0";
+}
+
+QWidget#background {
+    background-color: #ffffff;
+    border: 10px solid #f08080;
+}
+
+/* 타이틀 스타일 */
+QLabel#title_label {
+    font-size: 50px;
+    font-weight: bold;
+    color: #F08080;
+    text-align: center;
+}
+
+/* 버튼 스타일 */
+
+QPushButton#start_button, QPushButton#back_button {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #f08080;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+QPushButton#capture_button {
+    border: 12px solid #000000;
+    border-radius: 60px;
+    width: 120px;
+    height: 120px;
+    background-color: #ffffff;
+    position: relative;
+}
+
+QPushButton#capture_button::before {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 48px;
+    /* border: 12px solid #f08080; */
+    background-color: #0f8080;
+}
+
+QPushButton#capture_button:pressed {
+    background-color: #ffffff; /* 눌렀을 때의 배경 색상 */
+    border: 12px solid #f08080; /* 눌렀을 때 외곽 테두리 색상 */
+}
+
+QPushButton#capture_button:disabled {
+    border: 12px solid #CCCCCC;
+    background-color: #ffffff;
+}
+
+/* 카운트다운 텍스트 스타일 */
+QLabel#countdown_label {
+    color: black;
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 결과 텍스트 스타일 */
+QLabel#result_label {
+    font-size: 16px;
+    color: black;
+    text-align: center;
+}

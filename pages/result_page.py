@@ -2,21 +2,19 @@ from PyQt5.QtWidgets import QVBoxLayout, QLabel, QWidget, QGridLayout, QPushButt
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt
 import cv2
-class ResultPage(QWidget):
 
+class ResultPage(QWidget):
     def __init__(self):
         super().__init__()
-
         self.layout = QVBoxLayout()
         self.results_layout = QGridLayout()
         self.layout.addLayout(self.results_layout)
 
         self.back_button = QPushButton("Back to Start Page")
+        self.back_button.setObjectName("back_button")
         self.layout.addWidget(self.back_button)
 
         self.setLayout(self.layout)
-
-
 
     def clear_results_layout(self):
         while self.results_layout.count():
@@ -27,7 +25,6 @@ class ResultPage(QWidget):
 
     def set_prediction_results(self, age_predictions, gender_predictions, detected_faces, relation_predictions):
         self.clear_results_layout()
-        print(relation_predictions)
         row = 1
         for face_id, face_img in detected_faces.items():
             gender = gender_predictions[face_id]
@@ -55,4 +52,3 @@ class ResultPage(QWidget):
             self.results_layout.addWidget(img_label, row, 0)
             self.results_layout.addWidget(text_label, row, 1)
             row += 1
-

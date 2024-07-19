@@ -19,7 +19,7 @@ class CameraWidget(QWidget):
         self.image_label.setAlignment(Qt.AlignCenter)
         self.countdown_label = QLabel(self)
         self.countdown_label.setAlignment(Qt.AlignCenter)
-        self.countdown_label.setStyleSheet("color: white; font-size: 48px; font-weight: bold;")
+        self.countdown_label.setObjectName("countdown_label")
         self.countdown_label.setText("")
 
         layout = QVBoxLayout()
@@ -29,41 +29,10 @@ class CameraWidget(QWidget):
 
         # 카운트다운 버튼 추가
         self.capture_button = QPushButton(self)
-        self.capture_button.setStyleSheet("""
-            QPushButton {
-                border: 8px solid #ffffff; /* 도넛 형태를 위한 외곽 테두리 */
-                border-radius: 60px; /* 큰 원의 반경 */
-                width: 120px;
-                height: 120px;
-                background-color: transparent;
-                position: relative;
-            }
-            QPushButton::before {
-                content: "";
-                position: absolute;
-                top: 12px;
-                left: 12px;
-                width: 30px; /* 안쪽 작은 원의 지름 */
-                height: 30px;
-                border-radius: 12px; /* 작은 원의 반경 */
-                background-color: #cccccc; /* 내부 원의 색상 */
-            }
-            QPushButton:pressed::before {
-                background-color: #ffffff; /* 눌렀을 때의 색상 */
-            }
-            QPushButton:enabled {
-                background-color: transparent; /* 기본 버튼 색상 */
-            }
-            QPushButton:disabled {
-                border: 8px solid #cccccc; /* 비활성화 상태 외곽 테두리 색상 */
-                background-color: #cccccc;
-            }
-
-        """)
+        self.capture_button.setObjectName("capture_button")
         self.capture_button.clicked.connect(self.start_countdown)
         layout.addWidget(self.capture_button, alignment=Qt.AlignCenter)
 
-        self.setLayout(layout)
         self.setFixedSize(540, 960)
 
         self.timer = QTimer()
@@ -78,6 +47,14 @@ class CameraWidget(QWidget):
         self.countdown_timer.timeout.connect(self.update_countdown)
 
         self.update_layout()
+
+        container = QWidget()
+        container.setLayout(layout)
+        container.setObjectName("background")
+
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(container)
+        self.setLayout(main_layout)
 
     def update_layout(self):
         if self.display_countdown:
@@ -98,7 +75,6 @@ class CameraWidget(QWidget):
         self.countdown_seconds = 3
         self.display_countdown = True
         self.countdown_label.setText(f"{self.countdown_seconds}")
-        self.countdown_label.setStyleSheet("color: black; font-size: 48px; font-weight: bold;")
         self.capture_button.setEnabled(False)
         self.update_layout()
         self.countdown_timer.start(1000)  # 1초마다 호출
@@ -153,7 +129,7 @@ class CameraWidget(QWidget):
 
     def draw_face_annotations(self, frame, bbox, yaw_angle):
         cv2.putText(frame, f'Angle: {yaw_angle:.2f}', (bbox[0], bbox[1] - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
     def capture_faces(self):
         if self.frame is not None:  # 현재 프레임이 존재할 경우
@@ -173,7 +149,7 @@ class CameraWidget(QWidget):
             if self.is_bbox_inside_frame(bbox, frame_width, frame_height):
                 valid_face_ids.add(face_id)
                 yaw_angle = yaw_angles[face_id] if face_id < len(yaw_angles) else 0
-                box_color = (0, 255, 0) if abs(yaw_angle) <= self.angle_threshold else (255, 0, 0)
+                box_color = (255, 0, 0) if abs(yaw_angle) <= self.angle_threshold else (255, 0, 0)
                 cv2.rectangle(frame, bbox, box_color, 2)
                 cv2.putText(frame, f'ID: {face_id}', (bbox[0], bbox[1] - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, box_color, 2)
     
@@ -189,7 +165,7 @@ class CameraWidget(QWidget):
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = 3
         font_thickness = 10
-        color = (255, 255, 255)  # 흰색
+        color = (0, 0, 0)  # 검정색
 
         (text_width, text_height), baseline = cv2.getTextSize(countdown_text, font, font_scale, font_thickness)
         text_x = (frame.shape[1] - text_width) // 2
@@ -197,7 +173,7 @@ class CameraWidget(QWidget):
 
         # 반투명 배경 그리기
         overlay = frame.copy()
-        cv2.rectangle(overlay, (text_x - 20, text_y - text_height - 20), (text_x + text_width + 20, text_y + 10), (0, 0, 0), -1)
+        cv2.rectangle(overlay, (text_x - 20, text_y - text_height - 20), (text_x + text_width + 20, text_y + 10), (255, 255, 255), -1)
         frame = cv2.addWeighted(overlay, 0.5, frame, 1.0, 0)
 
         cv2.putText(frame, countdown_text, (text_x, text_y), font, font_scale, color, font_thickness, cv2.LINE_AA)
