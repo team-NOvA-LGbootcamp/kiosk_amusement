@@ -73,9 +73,9 @@ class RelationPredictor:
 
         if env == "WINDOWS":
             from tensorflow.keras.models import load_model  # type: ignore
-            self.models = load_model(model_path)
+            self.model = load_model(model_path)
 
-            if not self.models:
+            if not self.model:
                 raise ValueError("No models were loaded. Check the model path and file extensions.")
 
         elif env == "RASPBERRY":
@@ -123,9 +123,8 @@ class RelationPredictor:
 
             input_data = [face_image_1, face_image_2, metadata]
 
-            if self.env == "WINDOW":
+            if self.env == "WINDOWS":
                 model_output = self.model.predict(input_data, verbose=0)
-                
                 model_output = np.squeeze(model_output)
                 relation_proportion += model_output
 
