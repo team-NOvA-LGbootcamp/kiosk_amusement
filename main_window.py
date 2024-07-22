@@ -1,5 +1,4 @@
 import sys
-from recommendation import RecommendationAlgorithm
 from PyQt5.QtWidgets import QMainWindow, QStackedWidget
 from pages.camera_widget import CameraWidget
 from pages.start_page import StartPage
@@ -13,6 +12,9 @@ class MainWindow(QMainWindow):
 
         self.model = model
         self.relation_model = relation_model
+        self.age_predictions = None
+        self.gender_predictions = None
+        self.relation_prediction = None
 
         # QStackedWidget 생성
         self.stacked_widget = QStackedWidget()
@@ -49,8 +51,7 @@ class MainWindow(QMainWindow):
         self.result_page.back_button.clicked.connect(self.show_amusement_park_page)
 
         self.amusement_park_page.back_button.clicked.connect(self.show_start_page)
-        # # ResultPage의 back 버튼 신호와 페이지 전환 연결
-        # self.result_page.back_button.clicked.connect(self.show_start_page)
+
 
     def show_camera_page(self):
         self.stacked_widget.setCurrentWidget(self.camera_widget)
@@ -65,7 +66,8 @@ class MainWindow(QMainWindow):
                 "family": 0.5,
                 "couple": 0.25,
             }
-        self.result_page.set_prediction_results(age_predictions, gender_predictions, detected_faces, relation_predictions)
+        self.prediction_results = self.result_page.set_prediction_results(age_predictions, gender_predictions, detected_faces, relation_predictions)
+        self.age_predictions, self.gender_predictions = age_predictions, gender_predictions
         self.stacked_widget.setCurrentWidget(self.result_page)
 
     def show_start_page(self):
@@ -75,4 +77,11 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.amusement_park_page)
 
     def handle_relation_clicked(self, relation):
+        self.stacked_widget.setCurrentWidget(self.amusement_park_page)
+        self.relation_prediction = relation
         print(f"Relation clicked: {relation}")
+        self.amusement_park_page.make_recommendation(self.age_predictions,
+                                                        self.gender_predictions,
+                                                        self.relation_prediction)
+        
+        self.stacked_widget.setCurrentWidget(self.amusement_park_page)
