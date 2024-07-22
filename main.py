@@ -1,9 +1,13 @@
 import sys
+import os
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QFontDatabase
 from main_window import MainWindow
 from prediction import Predictor, RelationPredictor
 
+folder_dir = os.path.dirname(os.path.realpath(__file__))
+AGE_GENDER_MODEL_PATH = folder_dir+'/models/age_gender'
+REALTIONSHIP_MODEL_PATH = folder_dir+'/models/relationship'
 
 def load_fonts(dir):
         font_db = QFontDatabase()
@@ -12,8 +16,9 @@ def load_fonts(dir):
         print(f"Registered font family: {font_family}")
 
 if __name__ == "__main__":
-    model = Predictor('./models', env="WINDOWS")  # 모델 경로와 환경 설정
-    relation_model = RelationPredictor('./relationship_model/relationship_prediction_model_v1.h5', env="WINDOWS")
+    _env = "WINDOWS"
+    model = Predictor(AGE_GENDER_MODEL_PATH, env=_env)  # 모델 경로와 환경 설정
+    relation_model = RelationPredictor(REALTIONSHIP_MODEL_PATH, env=_env)
     app = QApplication(sys.argv)
     with open("style.qss", "r", encoding='utf-8') as f:
         stylesheet = f.read()

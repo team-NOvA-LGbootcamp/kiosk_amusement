@@ -8,12 +8,9 @@ IMAGE_SIZE = 224
 class Predictor:
     def __init__(self, model_path, env="WINDOWS"):
         
-        # tmp
-        model_path = "./models/age_gender"
-        # env = "RASPBERRY"
-
         self.env = env
-        if env == "WINDOWS":
+
+        if self.env == "WINDOWS":
 
             from tensorflow.keras.models import load_model  # type: ignore
             model_files = glob.glob(model_path + '/*.h5')  # Ensure .h5 extension
@@ -22,7 +19,7 @@ class Predictor:
             if not self.models:
                 raise ValueError("No models were loaded. Check the model path and file extensions.")
 
-        elif env == "RASPBERRY":
+        elif self.env == "RASPBERRY":
             import tflite_runtime.interpreter as tflite  # type: ignore
             model_files = glob.glob(model_path + '/*.tflite')
             self.interpreters = [tflite.Interpreter(model_path=file) for file in model_files]
@@ -103,20 +100,17 @@ class Predictor:
 
 class RelationPredictor:
     def __init__(self, model_path, env="WINDOWS"):
-        # tmp
-        model_path = "./models/relationship"
-        # env = "RASPBERRY"
 
         self.env = env
 
-        if env == "WINDOWS":
+        if self.env == "WINDOWS":
             from tensorflow.keras.models import load_model  # type: ignore
             self.model = load_model(glob.glob(model_path + '/*.h5')[0])
 
             if not self.model:
                 raise ValueError("No models were loaded. Check the model path and file extensions.")
 
-        elif env == "RASPBERRY":
+        elif self.env == "RASPBERRY":
             import tflite_runtime.interpreter as tflite  # type: ignore
             file = glob.glob(model_path + '/*.tflite')[0]
             self.interpreter = tflite.Interpreter(model_path=file)
@@ -145,6 +139,7 @@ class RelationPredictor:
         else: return 4
 
     def predict_image(self, face_images,ages,genders):
+
         if len(face_images.keys()) < 2:
             raise ValueError("Only One person in frame")
         
@@ -165,8 +160,6 @@ class RelationPredictor:
             gender1, gender2 = genders[face_id1], genders[face_id2]
 
             metadata = np.array([[age1_mapped, gender1, age2_mapped, gender2]], dtype='float32')
-
-            
 
             if self.env == "WINDOWS":
                 input_data =[face_image_1, face_image_2, metadata]
