@@ -26,6 +26,7 @@ class CameraWidget(QWidget):
         layout.addWidget(self.image_label)
         layout.addWidget(self.countdown_label)
         self.frame = None
+        self.original_frame = None  # 모델에 전달할 원본 프레임
 
         # 카운트다운 버튼 추가
         self.capture_button = QPushButton(self)
@@ -73,8 +74,8 @@ class CameraWidget(QWidget):
 
     def start_countdown(self):
         self.countdown_seconds = 3
+        self.countdown_label.setText("")
         self.display_countdown = True
-        self.countdown_label.setText(f"{self.countdown_seconds}")
         self.capture_button.setEnabled(False)
         self.update_layout()
         self.countdown_timer.start(1000)  # 1초마다 호출
@@ -90,15 +91,14 @@ class CameraWidget(QWidget):
                 self.countdown_label.setText("감지된 사람이 없습니다")
             self.capture_button.setEnabled(True)
             self.display_countdown = False
-        else:
-            self.countdown_label.setText(f"{self.countdown_seconds}")
 
     def update_image(self):
         ret, frame = self.cap.read()
         if ret:
             frame = cv2.flip(frame, 1)
             results = self.face_detection.process(frame)
-            self.frame = frame
+            self.frame = frame.copy()  # 화면에 표시할 프레임
+            self.original_frame = frame  # 원본 프레임
             face_boxes = []
             yaw_angles = []
             current_face_positions = {}
@@ -113,12 +113,16 @@ class CameraWidget(QWidget):
                         yaw_angles.append(yaw_angle)
                         face_id = len(face_boxes)  # 임시로 face_id를 인덱스로 설정
                         current_face_positions[face_id] = bbox
-                        self.draw_face_annotations(frame, bbox, yaw_angle)
+                        self.draw_face_annotations(self.frame, bbox, yaw_angle)
 
             self.face_ids = current_face_positions
 
-            self.draw_face_boxes(frame, yaw_angles)
-            self.display_frame(frame)
+            self.draw_face_boxes(self.frame, yaw_angles)
+            
+            if self.display_countdown:
+                self.draw_countdown_text(self.frame)
+                
+            self.display_frame(self.frame)
 
     def get_face_bbox(self, frame, detection):
         bboxC = detection.location_data.relative_bounding_box
@@ -132,11 +136,11 @@ class CameraWidget(QWidget):
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
     def capture_faces(self):
-        if self.frame is not None:  # 현재 프레임이 존재할 경우
+        if self.original_frame is not None:  # 원본 프레임이 존재할 경우
             face_images = {}
             for face_id, bbox in self.face_ids.items():
                 x, y, w, h = bbox
-                face_img = self.frame[y:y + h, x:x + w]
+                face_img = self.original_frame[y:y + h, x:x + w]  # 원본 프레임에서 얼굴 영역 잘라내기
                 if face_img.size > 0:
                     face_images[face_id] = face_img  # 얼굴 ID당 하나의 이미지
             self.switch_page.emit(face_images)
@@ -165,16 +169,11 @@ class CameraWidget(QWidget):
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = 3
         font_thickness = 10
-        color = (0, 0, 0)  # 검정색
+        color = (255, 255, 255) 
 
         (text_width, text_height), baseline = cv2.getTextSize(countdown_text, font, font_scale, font_thickness)
         text_x = (frame.shape[1] - text_width) // 2
         text_y = (frame.shape[0] + text_height) // 2
-
-        # 반투명 배경 그리기
-        overlay = frame.copy()
-        cv2.rectangle(overlay, (text_x - 20, text_y - text_height - 20), (text_x + text_width + 20, text_y + 10), (255, 255, 255), -1)
-        frame = cv2.addWeighted(overlay, 0.5, frame, 1.0, 0)
 
         cv2.putText(frame, countdown_text, (text_x, text_y), font, font_scale, color, font_thickness, cv2.LINE_AA)
 

@@ -57,7 +57,24 @@ QPushButton#capture_button:disabled {
     background-color: #ffffff;
 }
 
-/* 카운트다운 텍스트 스타일 */
+QPushButton#relation_button {
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+    background-color: #ffffff;
+    border: 8px solid #f08080;
+    padding: 10px;
+}
+
+QPushButton#relation_button:hover {
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+    background-color: #ffffff;
+    border: 8px solid #ff8080;
+    padding: 10px;
+}
+
 QLabel#countdown_label {
     color: black;
     font-size: 48px;
@@ -65,9 +82,15 @@ QLabel#countdown_label {
     text-align: center;
 }
 
-/* 결과 텍스트 스타일 */
 QLabel#result_label {
-    font-size: 16px;
-    color: black;
+    font-size: 24px;
+    color: #f08080;
+    text-align: center;
+}
+
+
+QLabel#suggestion_label {
+    font-size: 24px;
+    color: #f08080;
     text-align: center;
 }

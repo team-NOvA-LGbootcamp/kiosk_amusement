@@ -29,6 +29,7 @@ class MainWindow(QMainWindow):
         # 세 번째 페이지 생성 및 추가 (ResultPage)
         self.result_page = ResultPage()
         self.stacked_widget.addWidget(self.result_page)
+        self.result_page.relation_clicked.connect(self.handle_relation_clicked)
 
         # 네 번째 페이지 생성 및 추가 (amusement_park_page)
         self.amusement_park_page = AmusementParkPage()
@@ -72,3 +73,6 @@ class MainWindow(QMainWindow):
 
     def show_amusement_park_page(self):
         self.stacked_widget.setCurrentWidget(self.amusement_park_page)
+
+    def handle_relation_clicked(self, relation):
+        print(f"Relation clicked: {relation}")
