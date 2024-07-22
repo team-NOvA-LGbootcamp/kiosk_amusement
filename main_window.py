@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QStackedWidget
+from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QApplication
+from PyQt5.QtGui import QIcon
 from pages.camera_widget import CameraWidget
 from pages.start_page import StartPage
 from pages.result_page import MultiResultPage, SingleResultPage
@@ -16,12 +17,21 @@ class MainWindow(QMainWindow):
         self.gender_predictions = None
         self.relation_prediction = None
 
+        # 윈도우 설정
+        self.setWindowTitle("NAMU")
+        self.setGeometry(0, 0, 540, 960)
+        self.setFixedSize(540, 960)
+        # self.show_on_second_monitor()
+        icon_path = 'icons/namu.png'
+        self.icon = QIcon(icon_path)
+        self.setWindowIcon(self.icon)
+
         # QStackedWidget 생성
         self.stacked_widget = QStackedWidget()
         self.setCentralWidget(self.stacked_widget)
 
         # 페이지 정의
-        self.start_page = StartPage()
+        self.start_page = StartPage(icon_path)
         self.camera_widget = CameraWidget()
         self.result_page_multiple = MultiResultPage()
         self.result_page_single = SingleResultPage()
@@ -34,10 +44,6 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.result_page_single)
         self.stacked_widget.addWidget(self.amusement_park_page)
 
-        # 윈도우 설정
-        self.setWindowTitle("Main Window")
-        self.setGeometry(0, 0, 540, 960)
-        self.setFixedSize(540, 960)
 
         # 버튼 액션
         self.start_page.start_button.clicked.connect(self.show_camera_page)
@@ -47,6 +53,13 @@ class MainWindow(QMainWindow):
         self.amusement_park_page.back_button.clicked.connect(self.show_start_page)
         self.result_page_multiple.relation_clicked.connect(self.handle_relation_clicked)
         self.result_page_single.single_clicked.connect(self.handle_single_clicked)
+
+
+    def show_on_second_monitor(self):
+        app = QApplication.instance()
+        screen = app.screens()[1] if len(app.screens()) > 1 else app.primaryScreen()
+        self.setGeometry(screen.geometry())
+        self.showFullScreen()
 
     def show_camera_page(self):
         self.stacked_widget.setCurrentWidget(self.camera_widget)
