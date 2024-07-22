@@ -113,7 +113,6 @@ class CameraWidget(QWidget):
                         yaw_angles.append(yaw_angle)
                         face_id = len(face_boxes)  # 임시로 face_id를 인덱스로 설정
                         current_face_positions[face_id] = bbox
-                        self.draw_face_annotations(self.frame, bbox, yaw_angle)
 
             self.face_ids = current_face_positions
 
@@ -131,9 +130,6 @@ class CameraWidget(QWidget):
                int(bboxC.width * iw), int(bboxC.height * ih)
         return bbox
 
-    def draw_face_annotations(self, frame, bbox, yaw_angle):
-        cv2.putText(frame, f'Angle: {yaw_angle:.2f}', (bbox[0], bbox[1] - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
     def capture_faces(self):
         if self.original_frame is not None:  # 원본 프레임이 존재할 경우
@@ -152,10 +148,8 @@ class CameraWidget(QWidget):
         for face_id, bbox in list(self.face_ids.items()):  # dictionary를 리스트로 변환하여 순회
             if self.is_bbox_inside_frame(bbox, frame_width, frame_height):
                 valid_face_ids.add(face_id)
-                yaw_angle = yaw_angles[face_id] if face_id < len(yaw_angles) else 0
-                box_color = (255, 0, 0) if abs(yaw_angle) <= self.angle_threshold else (255, 0, 0)
+                box_color = (0, 255, 0)
                 cv2.rectangle(frame, bbox, box_color, 2)
-                cv2.putText(frame, f'ID: {face_id}', (bbox[0], bbox[1] - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, box_color, 2)
     
         # 화면 밖으로 나간 얼굴 ID 삭제
         self.face_ids = {face_id: bbox for face_id, bbox in self.face_ids.items() if face_id in valid_face_ids}

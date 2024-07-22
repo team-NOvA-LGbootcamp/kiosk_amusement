@@ -10,7 +10,7 @@ class Predictor:
         
         # tmp
         model_path = "./models/age_gender"
-        env = "RASPBERRY"
+        # env = "RASPBERRY"
 
         self.env = env
         if env == "WINDOWS":
@@ -56,7 +56,6 @@ class Predictor:
         for face_id, img in face_image.items():
             age_predictions = []
             gender_predictions = []
-            print(img.shape)
             preprocessed_img = self.preprocess_image(img)
             if self.env == "WINDOWS":
                 prediction_results = []
@@ -65,7 +64,6 @@ class Predictor:
                     prediction_results.append(pred)
                 prediction_results = np.array(prediction_results)
                 mean_prediction = np.mean(prediction_results, axis=0).squeeze()
-                print(f"{face_id}:{mean_prediction}")
                 if mean_prediction.ndim == 1 and mean_prediction.size == 2:
                     age_predictions.append(mean_prediction[0])
                     gender_predictions.append(mean_prediction[1])
@@ -107,7 +105,7 @@ class RelationPredictor:
     def __init__(self, model_path, env="WINDOWS"):
         # tmp
         model_path = "./models/relationship"
-        env = "RASPBERRY"
+        # env = "RASPBERRY"
 
         self.env = env
 

@@ -71,6 +71,14 @@ QPushButton#relation_button:hover {
     font-weight: bold;
     color: black;
     background-color: #ffffff;
+    border: 8px solid #ff0000;
+    padding: 10px;
+}
+
+QPushButton#recommend_button {
+    font-size: 15px;
+    color: black;
+    background-color: #ffffff;
     border: 8px solid #ff8080;
     padding: 10px;
 }
