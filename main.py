@@ -17,7 +17,7 @@ def load_fonts(dir):
 
 if __name__ == "__main__":
     try:
-        _env = sys.argv[1] #ex)WINDOWS, RASPBERRY(default)
+        _env = sys.argv[1] #ex)WINDOWS, RASPBERRY(default), DEV
     except:
         _env = "RASPBERRY"
     model = Predictor(AGE_GENDER_MODEL_PATH, env=_env)  # 모델 경로와 환경 설정
