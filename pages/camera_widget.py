@@ -106,6 +106,7 @@ class CameraWidget(QWidget):
         ret, frame = self.cap.read()
         if ret:
             frame = cv2.flip(frame, 1)
+            self.frame_save = frame.copy() 
             results = self.face_detection.process(frame)
             self.frame = frame.copy()  # 화면에 표시할 프레임
             self.original_frame = frame  # 원본 프레임
