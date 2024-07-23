@@ -10,6 +10,9 @@ from pages.amusement_park_page import AmusementParkPage
 from pages.dev_camera import DevPage
 import cv2
 import numpy as np 
+import os
+import requests
+import qrcode
 
 class MainWindow(QMainWindow):
     def __init__(self, model, relation_model, env):
@@ -31,8 +34,10 @@ class MainWindow(QMainWindow):
             self.setGeometry(0, 0, 540, 960)
             self.setFixedSize(540, 960)
         else:
-            self.setGeometry(0, 0, 1080, 1920)
-            self.show_on_second_monitor()
+            # self.setGeometry(0, 0, 1080, 1920)
+            # self.show_on_second_monitor()
+            self.setGeometry(0, 0, 540, 960)
+            self.setFixedSize(540, 960)
 
         if env=="RASPBERRY" or env=="WINDOWS":
             icon_path = './resources/icons/namu.png'
@@ -128,8 +133,64 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.camera_widget)
         self.camera_widget.start_webcam()  # 카메라 시작
 
+    def generate_qr(self, iamge):
+        access_token = "0fd7675e49b0b6c9281fc826c88ac5529c8c4530" 
+        image_path = "./resources/qr/image.jpg"
+        qr_path = "./resources/qr/qr.png"
+
+        try:
+            if os.path.exists(qr_path):
+                os.remove(qr_path)
+
+            cv2.imwrite(image_path, iamge)
+            
+            url = "https://api.imgur.com/3/image"
+            headers = {"Authorization": f"Bearer {access_token}",}
+
+            with open(image_path, "rb") as image_file:
+                files = {"image": image_file}
+                response = requests.post(url, headers=headers, files=files)
+
+            result = response.json()
+
+            if not result['success']:
+                return False
+            
+            self.image_id = result["data"]["id"]
+            image_link = result["data"]["link"]
+
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+
+            qr.add_data(image_link)
+            qr.make(fit=True)
+            img = qr.make_image(fill="black", back_color="white")
+            img.save(qr_path)
+        except Exception as e:
+            print(e)
+
+    def delte_img_url(self):
+        try:
+            access_token = "0fd7675e49b0b6c9281fc826c88ac5529c8c4530" 
+            image_id = self.image_id
+            url = f"https://api.imgur.com/3/image/{image_id}"
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+            }
+            response = requests.delete(url, headers=headers)
+            if response.status_code != 200:
+                print("imgur delete fail")
+        except Exception as e:
+            print(e)
+
+
 
     def show_result_page(self, detected_faces):
+        self.generate_qr(self.camera_widget.frame_save)
         self.camera_widget.stop_webcam()  # 웹캠 정지
         print(detected_faces)
         self.age_predictions, self.gender_predictions = self.model.predict_image(detected_faces)
@@ -142,6 +203,7 @@ class MainWindow(QMainWindow):
             self.stacked_widget.setCurrentWidget(self.result_page_single)
 
     def show_start_page(self):
+        self.delte_img_url()
         self.stacked_widget.setCurrentWidget(self.start_page)
         self.result_page_multiple.clear_all_layouts()
         self.result_page_single.clear_all_layouts
