@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QApplication
 from PyQt5.QtGui import QPixmap, QColor, QMovie
-from PyQt5.QtCore import Qt, QByteArray, pyqtSignal
+from PyQt5.QtCore import Qt, QByteArray, pyqtSignal, QSize
 from recommendation import RecommendationAlgorithm
 
 
@@ -11,7 +11,6 @@ class AmusementParkPage(QWidget):
         super().__init__()
 
         self.recommendation_res= []
-        # self.recommendation_res = recommendation_res or ["viking", "ferris_wheel", "safari"]
 
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(0)
@@ -28,7 +27,7 @@ class AmusementParkPage(QWidget):
         intro_widget.setLayout(intro_layout)
         intro_text_label = QLabel("NOvA Park에 오신 것을 환영합니다.\n아래 어트랙션을 추천드려요!", self)
         intro_text_label.setAlignment(Qt.AlignCenter)
-        intro_text_label.setStyleSheet("font-size: 20px; font-weight: bold;")
+        intro_text_label.setStyleSheet("font-size: 30px; font-weight: bold;")
         intro_layout.addWidget(intro_text_label)
 
         # Recommendation 영역
@@ -44,16 +43,16 @@ class AmusementParkPage(QWidget):
             box_layout = QVBoxLayout()
             box.setLayout(box_layout)
 
+            # Loading GIF 삽입
             image_label = QLabel()
-            # 동적 이미지 추가 (loading.gif)
-            movie = QMovie('./ui_images/loading.gif', QByteArray(), self)
+            movie = QMovie('./resources/icons/loading.gif', QByteArray(), self)
             movie.setCacheMode(QMovie.CacheAll)
             image_label.setMovie(movie)
+            movie.setScaledSize(QSize(75,70))  # GIF 크기 설정
             movie.start()
-
-            # image_label.setPixmap(pixmap.scaled(70,70))
             image_label.setAlignment(Qt.AlignCenter)
             box_layout.addWidget(image_label)
+            box_layout.setContentsMargins(0,0,0,0)
 
             recommendation_layout.addWidget(box)
 
@@ -63,17 +62,20 @@ class AmusementParkPage(QWidget):
         parkmap_widget.setLayout(parkmap_layout)
 
         parkmap_label = QLabel()
-        parkmap_label.setPixmap(QPixmap("./ui_images/park.png"))
+        parkmap_label.setPixmap(QPixmap("./resources/icons/park.png"))
         parkmap_label.setAlignment(Qt.AlignCenter)
         parkmap_label.setScaledContents(True)
         parkmap_layout.addWidget(parkmap_label)
         
-        # Current Location 아이콘 추가
+        # Current Location GIF 아이콘 추가
         icon_label = QLabel(parkmap_widget)
-        location_icon = QPixmap("./ui_images/current_loc.png")
-        icon_label.setPixmap(location_icon.scaled(32,35))
-        icon_label.move(273, 440) # 이미지 위치 설정
+        icon_label.move(273, 395) # 이미지 위치 설정
+        movie = QMovie('./resources/icons/current_location.gif', QByteArray(), self)
+        movie.setCacheMode(QMovie.CacheAll)
+        movie.setScaledSize(QSize(75,70))
+        icon_label.setMovie(movie)
         icon_label.setAlignment(Qt.AlignCenter)
+        movie.start()
 
         # 각 영역을 메인 레이아웃에 추가
         main_layout.addWidget(intro_widget)
@@ -82,6 +84,7 @@ class AmusementParkPage(QWidget):
 
         # Back 버튼
         self.back_button = QPushButton("Back to Start Page")
+        self.back_button.setObjectName("back_button")
         main_layout.addWidget(self.back_button, alignment=Qt.AlignBottom | Qt.AlignCenter)
     
     def make_recommendation(self, ages, genders, relation):
@@ -90,7 +93,7 @@ class AmusementParkPage(QWidget):
         self.update_recommendations()  # 추천 결과 업데이트
 
     def update_recommendations(self):
-        recommendation_layout = self.layout().itemAt(1).widget().layout()  # Recommendation 영역의 layout 가져오기
+        recommendation_layout = self.layout().itemAt(1).widget().layout()
         
         # 기존 위젯들 제거
         for i in reversed(range(recommendation_layout.count())):
@@ -104,13 +107,13 @@ class AmusementParkPage(QWidget):
             box.setLayout(box_layout)
 
             ride_name = " ".join([word.title() for word in res.split("_")])
-            title_label = QLabel(f"{i+1}: {ride_name}")
+            title_label = QLabel(f"{i+1}: {ride_name}\n대기시간: {35*(i+1)}분")
             title_label.setStyleSheet("font-size: 16px;")
             title_label.setAlignment(Qt.AlignCenter)
             box_layout.addWidget(title_label)
 
             image_label = QLabel()
-            pixmap = QPixmap(f"./ui_images/{res}.png")  # 각 박스에 맞는 이미지 파일 경로 설정
+            pixmap = QPixmap(f"./resources/icons/{res}.png")  # 각 박스에 맞는 이미지 파일 경로 설정
             image_label.setPixmap(pixmap.scaled(70,70))
             image_label.setAlignment(Qt.AlignCenter)
             box_layout.addWidget(image_label)

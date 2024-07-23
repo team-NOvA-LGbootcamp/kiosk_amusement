@@ -101,9 +101,9 @@ class MultiResultPage(QWidget):
         
         # 관계 예측 결과 표시
         relation_icons = {
-            'friend': 'icons/friend.png',
-            'family': 'icons/family.png',
-            'couple': 'icons/couple.png'
+            'friend': './resources/icons/friend.png',
+            'family': './resources/icons/family.png',
+            'couple': './resources/icons/couple.png'
         }
         relation_labels = {'friend' : '친구', 'family' : '가족', 'couple' : '연인'}
         sorted_relations = sorted(relation_predictions.items(), key=lambda x: x[1], reverse=True)
@@ -112,7 +112,7 @@ class MultiResultPage(QWidget):
             relation_button.setObjectName("relation_button")
 
             # 아이콘 설정
-            icon_path = relation_icons.get(relation, 'icons/default.png')
+            icon_path = relation_icons.get(relation, './resources/icons/default.png')
             icon = QIcon(icon_path)
             relation_button.setIcon(icon)
             relation_button.setIconSize(QSize(24, 24))  # 아이콘 크기 설정
