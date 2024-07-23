@@ -6,10 +6,11 @@ import cv2
 class MultiResultPage(QWidget):
     relation_clicked = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, width):
         super().__init__()
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
+        self.width = width
 
         # 상단 레이아웃 (얼굴 사진 및 나이/성별 예측 결과)
         self.top_layout = QVBoxLayout()
@@ -79,7 +80,7 @@ class MultiResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(50, 50, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.width*0.1, self.width*0.1, Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
             info_label.setAlignment(Qt.AlignCenter)
@@ -129,8 +130,9 @@ class MultiResultPage(QWidget):
 class SingleResultPage(QWidget):
     single_clicked = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, width):
         super().__init__()
+        self.window_width = width
 
         # 기본 레이아웃 및 위젯 생성
         self.main_layout = QVBoxLayout()
@@ -161,7 +163,7 @@ class SingleResultPage(QWidget):
 
             # 이미지 크기 조정
             height, width, _ = face_img.shape
-            scale_factor = min(150 / width, 150 / height)
+            scale_factor = min(self.window_width*0.2 / width, self.window_width*0.2 / height)
             new_width = int(width * scale_factor)
             new_height = int(height * scale_factor)
             face_img = cv2.resize(face_img, (new_width, new_height))
@@ -172,7 +174,7 @@ class SingleResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(150, 150, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.2, self.window_width*0.2, Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
             info_label.setAlignment(Qt.AlignCenter)

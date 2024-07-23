@@ -16,15 +16,17 @@ def load_fonts(dir):
         print(f"Registered font family: {font_family}")
 
 if __name__ == "__main__":
-    _env = "WINDOWS"
+    try:
+        _env = sys.argv[1] #ex)WINDOWS, RASPBERRY(default)
+    except:
+        _env = "RASPBERRY"
     model = Predictor(AGE_GENDER_MODEL_PATH, env=_env)  # 모델 경로와 환경 설정
     relation_model = RelationPredictor(REALTIONSHIP_MODEL_PATH, env=_env)
     app = QApplication(sys.argv)
     with open("style.qss", "r", encoding='utf-8') as f:
         stylesheet = f.read()
     load_fonts('fonts/HSSanTokki2.0(2024).ttf')
-    
     app.setStyleSheet(stylesheet)
-    main_window = MainWindow(model, relation_model)
+    main_window = MainWindow(model, relation_model, _env)
     main_window.show()
     sys.exit(app.exec_())

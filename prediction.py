@@ -6,7 +6,7 @@ from itertools import combinations
 IMAGE_SIZE = 224
 
 class Predictor:
-    def __init__(self, model_path, env="WINDOWS"):
+    def __init__(self, model_path, env="RASPBERRY"):
         
         self.env = env
 
@@ -99,7 +99,7 @@ class Predictor:
 
 
 class RelationPredictor:
-    def __init__(self, model_path, env="WINDOWS"):
+    def __init__(self, model_path, env="RASPBERRY"):
 
         self.env = env
 
