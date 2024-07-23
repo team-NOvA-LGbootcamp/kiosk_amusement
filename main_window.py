@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
 
             # 배경음악 설정
             self.mediaPlayer = QMediaPlayer()
-            self.mediaPlayer.setVolume(30)
+            self.mediaPlayer.setVolume(10)
             url = QUrl.fromLocalFile('./resources/music/puppy_waltz.mp3')  # 음악 파일 경로 지정
             content = QMediaContent(url)
             self.mediaPlayer.setMedia(content)
@@ -192,7 +192,6 @@ class MainWindow(QMainWindow):
     def show_result_page(self, detected_faces):
         self.generate_qr(self.camera_widget.frame_save)
         self.camera_widget.stop_webcam()  # 웹캠 정지
-        print(detected_faces)
         self.age_predictions, self.gender_predictions = self.model.predict_image(detected_faces)
         if len(self.age_predictions.keys()) > 1:
             relation_predictions = self.relation_model.predict_image(detected_faces, self.age_predictions, self.gender_predictions)
@@ -231,7 +230,6 @@ class MainWindow(QMainWindow):
 
     def show_result_dev_single(self):
         img = cv2.imread('resources\icons\dev_image.jpg')
-        print(img.shape)
         detected_faces = {1:np.array(img)}
         self.age_predictions, self.gender_predictions = self.model.predict_image(detected_faces)
         self.result_page_single.set_prediction_results(self.age_predictions, self.gender_predictions, detected_faces)

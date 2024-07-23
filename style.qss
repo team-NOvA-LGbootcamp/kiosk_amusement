@@ -84,7 +84,7 @@ QPushButton#recommend_button {
 }
 
 QLabel#countdown_label {
-    color: black;
+    color: #f08080;
     font-size: 48px;
     font-weight: bold;
     text-align: center;
