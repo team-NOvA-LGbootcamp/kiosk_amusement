@@ -46,12 +46,12 @@ class AmusementParkPage(QWidget):
         """)
         
         loading_label = QLabel()
-        loading_label.setFixedSize(self.width()*0.15, self.width()*0.15)
+        loading_label.setFixedSize(int(self.width()*0.15), int(self.width()*0.15))
         loading_label.setAlignment(Qt.AlignCenter)
         movie = QMovie('./resources/icons/loading.gif', QByteArray(), self)
         movie.setCacheMode(QMovie.CacheAll)
         loading_label.setMovie(movie)
-        movie.setScaledSize(QSize(self.width()*0.15, self.width()*0.15))
+        movie.setScaledSize(QSize(int(self.width()*0.15), int(self.width()*0.15)))
         movie.start()
         recommendation_layout.addWidget(loading_label)
 
@@ -68,19 +68,19 @@ class AmusementParkPage(QWidget):
         
         # Park Map에 Current Loc 아이콘 추가
         icon1_label = QLabel(parkmap_widget)
-        icon1_label.setFixedSize(self.width()*0.07, self.width()*0.07)
+        icon1_label.setFixedSize(int(self.width()*0.07), int(self.width()*0.07))
         movie = QMovie('./resources/icons/current_location.gif', QByteArray(), self)
         movie.setCacheMode(QMovie.CacheAll)
-        movie.setScaledSize(QSize(self.width()*0.07, self.width()*0.07))
+        movie.setScaledSize(QSize(int(self.width()*0.07), int(self.width()*0.07)))
         icon1_label.setMovie(movie)
-        icon1_label.move(self.width()*0.47, self.height()*0.65) # 이미지 위치 설정
+        icon1_label.move(int(self.width()*0.47), int(self.height()*0.65)) # 이미지 위치 설정
         movie.start()
 
         # Park Map에 ghost 이미지 추가
         icon2_label = QLabel(parkmap_widget)
-        icon2_label.setFixedSize(self.width()*0.08,self.width()*0.08)
-        icon2_label.setPixmap(QPixmap("./resources/icons/ghost.png").scaled(self.width()*0.08,self.width()*0.08))
-        icon2_label.move(self.width()*0.52, self.height()*0.3) # 이미지 위치 설정
+        icon2_label.setFixedSize(int(self.width()*0.08), int(self.width()*0.08))
+        icon2_label.setPixmap(QPixmap("./resources/icons/ghost.png").scaled(int(self.width()*0.08), int(self.width()*0.08)))
+        icon2_label.move(int(self.width()*0.52), int(self.height()*0.3)) # 이미지 위치 설정
 
         # QR코드 공간 추가 (Label을 이용)
         qrcode_label = QLabel()
@@ -129,7 +129,7 @@ class AmusementParkPage(QWidget):
 
         for i, res in enumerate(self.recommendation_res):
             box = QWidget()
-            box.setFixedSize(self.recbox_width, self.recbox_height)
+            box.setFixedSize(int(self.recbox_width), int(self.recbox_height))
             box_layout = QVBoxLayout()
             box.setLayout(box_layout)
             box_layout.setContentsMargins(0,0,0,0)
@@ -142,7 +142,7 @@ class AmusementParkPage(QWidget):
 
             image_label = QLabel()
             pixmap = QPixmap(f"./resources/icons/{res}.png")  # 각 박스에 맞는 이미지 파일 경로 설정
-            image_label.setPixmap(pixmap.scaled(self.width()*0.11, self.width()*0.11))
+            image_label.setPixmap(pixmap.scaled(int(self.width()*0.11), int(self.width()*0.11)))
             image_label.setAlignment(Qt.AlignCenter | Qt.AlignTop)
             box_layout.addWidget(image_label)
 

@@ -13,6 +13,9 @@ import numpy as np
 import os
 import requests
 import qrcode
+import json
+from PIL import Image, ImageDraw, ImageFont
+from datetime import datetime
 
 class MainWindow(QMainWindow):
     def __init__(self, model, relation_model, env):
@@ -23,7 +26,7 @@ class MainWindow(QMainWindow):
         self.age_predictions = None
         self.gender_predictions = None
         self.relation_prediction = None
-
+        self.access_token = None
         # 윈도우 설정
         self.setWindowTitle("NAMU")
         
@@ -133,19 +136,87 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.camera_widget)
         self.camera_widget.start_webcam()  # 카메라 시작
 
+
+    def deco_frame(self,cv2_image):
+        try:
+            overlays = [
+            {"path": "./resources/icons/deco1.png", "position": (0, 300), "size": (180, 180)},
+            {"path": "./resources/icons/deco2.png", "position": (460, 300), "size": (180, 180)}
+            ]
+            # BGR을 RGB로 변환하고 PIL 이미지로 변환
+            cv2_image_rgb = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
+            pil_image = Image.fromarray(cv2_image_rgb)
+            
+            # 이미지 리사이즈
+            pil_image = pil_image.resize((640, 480), Image.LANCZOS)
+
+            # 오버레이 추가
+            for overlay_info in overlays:
+                overlay = Image.open(overlay_info["path"]).resize(overlay_info["size"], Image.LANCZOS)
+                pil_image.paste(overlay, overlay_info["position"], overlay)
+
+            # 현재 날짜와 시간
+            date_time_str = datetime.now().strftime('%Y-%m-%d %H:%M')
+
+            # 폰트 및 색상 설정
+            fonts = {
+                "digital": ImageFont.truetype("./resources/fonts/digital_font.ttf", 30),
+                "namu": ImageFont.truetype("./resources/fonts/HSSanTokki2.0(2024).ttf", 50),
+                "nova": ImageFont.truetype("./resources/fonts/HSSanTokki2.0(2024).ttf", 15)
+            }
+            
+            colors = {
+                "digital": (255, 165, 0),
+                "namu": (255, 150, 150),
+                "nova": (255, 150, 150)
+            }
+
+            positions = {
+                "digital": (5, 5),
+                "namu": (pil_image.width - 155, 10),
+                "nova": (pil_image.width - 155 - 10, 10 + 50 - 4)
+            }
+
+            # 텍스트 추가
+            draw = ImageDraw.Draw(pil_image)
+            draw.text(positions["digital"], date_time_str, font=fonts["digital"], fill=colors["digital"])
+            draw.text(positions["namu"], "NAMU", font=fonts["namu"], fill=colors["namu"])
+            draw.text(positions["nova"], "NOvA Amusement Park", font=fonts["nova"], fill=colors["nova"])
+
+            # PIL 이미지를 다시 BGR로 변환하여 cv2 형식으로 반환
+            final_image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+        except Exception as e:
+            print(e)
+        return final_image
+
+        
+
     def generate_qr(self, iamge):
-        access_token = "0fd7675e49b0b6c9281fc826c88ac5529c8c4530" 
-        image_path = "./resources/qr/image.jpg"
-        qr_path = "./resources/qr/qr.png"
+        folder = "./resources/qr/"
+
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        image_path = folder+"image.jpg"
+        qr_path = folder+"qr.png"
+        token_path = folder+"token.json"
 
         try:
             if os.path.exists(qr_path):
                 os.remove(qr_path)
 
+            if not os.path.exists(token_path):
+                raise Exception("no access_token file")
+
+            with open(token_path, "r") as file:
+                token_data = json.load(file)
+
+            self.access_token = token_data.get("access_token")
+            iamge = self.deco_frame(iamge)
             cv2.imwrite(image_path, iamge)
-            
+
             url = "https://api.imgur.com/3/image"
-            headers = {"Authorization": f"Bearer {access_token}",}
+            headers = {"Authorization": f"Bearer {self.access_token}",}
 
             with open(image_path, "rb") as image_file:
                 files = {"image": image_file}
@@ -154,8 +225,8 @@ class MainWindow(QMainWindow):
             result = response.json()
 
             if not result['success']:
-                return False
-            
+                raise Exception("image upload fail")
+
             self.image_id = result["data"]["id"]
             image_link = result["data"]["link"]
 
@@ -173,13 +244,15 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(e)
 
-    def delte_img_url(self):
+    def delete_img_url(self):
         try:
-            access_token = "0fd7675e49b0b6c9281fc826c88ac5529c8c4530" 
+            if self.access_token is None:
+                raise Exception("no access_token file")
+
             image_id = self.image_id
             url = f"https://api.imgur.com/3/image/{image_id}"
             headers = {
-                "Authorization": f"Bearer {access_token}",
+                "Authorization": f"Bearer {self.access_token}",
             }
             response = requests.delete(url, headers=headers)
             if response.status_code != 200:
@@ -187,10 +260,8 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(e)
 
-
-
     def show_result_page(self, detected_faces):
-        self.generate_qr(self.camera_widget.frame_save)
+
         self.camera_widget.stop_webcam()  # 웹캠 정지
         self.age_predictions, self.gender_predictions = self.model.predict_image(detected_faces)
         if len(self.age_predictions.keys()) > 1:
@@ -202,7 +273,7 @@ class MainWindow(QMainWindow):
             self.stacked_widget.setCurrentWidget(self.result_page_single)
 
     def show_start_page(self):
-        self.delte_img_url()
+        self.delete_img_url()
         self.stacked_widget.setCurrentWidget(self.start_page)
         self.result_page_multiple.clear_all_layouts()
         self.result_page_single.clear_all_layouts
@@ -211,6 +282,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.amusement_park_page)
 
     def handle_relation_clicked(self, relation):
+        self.generate_qr(self.camera_widget.frame_save)
         self.amusement_park_page.make_recommendation(self.age_predictions,
                                                         self.gender_predictions,
                                                         relation)
@@ -218,6 +290,7 @@ class MainWindow(QMainWindow):
 
 
     def handle_single_clicked(self):
+        self.generate_qr(self.camera_widget.frame_save)
         self.amusement_park_page.make_recommendation(self.age_predictions,
                                                         self.gender_predictions,
                                                         "") #temporary empty string
