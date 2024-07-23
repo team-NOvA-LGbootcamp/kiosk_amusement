@@ -16,8 +16,8 @@ class CameraWidget(QWidget):
         self.mp_face_detection = mp.solutions.face_detection
         self.face_detection = self.mp_face_detection.FaceDetection(min_detection_confidence=0.2)
         self.cap = cv2.VideoCapture(0)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+        # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+        # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         print(f'({self.cap.get(cv2.CAP_PROP_FRAME_WIDTH),self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)})')
         
@@ -53,10 +53,23 @@ class CameraWidget(QWidget):
         self.face_ids = {}
         self.angle_threshold = 20
         self.countdown_seconds = 3
+        
+
+
+        ## 자동촬영 구현
+        self.id_checker = False
+        self.id_checker_count = 0
+        self.ID_CHECK_FREQUENCY = 4
+        self.ID_CHECK_TIME = 250
+        self.prev_face_ids = [0] * self.ID_CHECK_FREQUENCY
+        self.autotimer = QTimer()
+        self.autotimer.timeout.connect(self.check_face_ids)
+        self.autotimer.timeout.connect(self.auto_capture)
+        self.autotimer.setInterval(self.ID_CHECK_TIME)
+        
 
         self.countdown_timer = QTimer()
         self.countdown_timer.timeout.connect(self.update_countdown)
-
         self.update_layout()
 
         container = QWidget()
@@ -66,6 +79,27 @@ class CameraWidget(QWidget):
         main_layout = QVBoxLayout()
         main_layout.addWidget(container)
         self.setLayout(main_layout)
+
+
+    def check_face_ids(self):
+        if self.face_ids:
+            self.prev_face_ids[self.id_checker_count] = len(self.face_ids.keys())  
+        else:
+            self.prev_face_ids[self.id_checker_count] = 0
+        self.id_checker_count = (self.id_checker_count + 1) % self.ID_CHECK_FREQUENCY
+        if all(x == self.prev_face_ids[0] for x in self.prev_face_ids) and self.prev_face_ids[0] != 0:
+            self.id_checker = True
+        else:
+            self.id_checker = False
+
+    def auto_capture(self):
+        if self.id_checker and not self.display_countdown:
+            self.start_countdown()
+        elif not self.id_checker:
+            self.countdown_timer.stop()
+            self.display_countdown = False
+            self.capture_button.setEnabled(True)
+
 
     def update_layout(self):
         if self.display_countdown:
@@ -78,9 +112,11 @@ class CameraWidget(QWidget):
 
     def start_webcam(self):
         self.timer.start(30)
+        self.autotimer.start(self.ID_CHECK_TIME)
 
     def stop_webcam(self):
         self.timer.stop()
+        self.autotimer.stop()
 
     def start_countdown(self):
         self.countdown_seconds = 3
