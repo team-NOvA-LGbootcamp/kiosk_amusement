@@ -22,10 +22,10 @@ class RecommendationAlgorithm:
     
     def run_recommendation(self, ages, genders, relation):
         num_detected = len(ages)
-
         for i in range(num_detected):
             self.age.append(ages[i+1])
             self.gender.append(genders[i+1])
+
         print(self.age, self.gender, num_detected)
         if num_detected==1: # 혼자왔어요
             a = self.age[0]
@@ -77,7 +77,7 @@ class RecommendationAlgorithm:
                 rides_score["swing_ride"] += 2
                 rides_score["themepark_train"] += 3
                 rides_score["viking"] += 1
-            elif a in range(40,50):
+            elif a in range(50,60):
                 rides_score["ferris_wheel"] += 4
                 rides_score["merry_go_round"] += 5
                 rides_score["safari"] += 2
