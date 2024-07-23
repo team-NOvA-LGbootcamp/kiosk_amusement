@@ -10,7 +10,7 @@ from pages.amusement_park_page import AmusementParkPage
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, model, relation_model):
+    def __init__(self, model, relation_model, env):
         super().__init__()
 
         self.model = model
@@ -21,9 +21,10 @@ class MainWindow(QMainWindow):
 
         # 윈도우 설정
         self.setWindowTitle("NAMU")
-        self.setGeometry(0, 0, 540, 960)
-        self.setFixedSize(540, 960)
-        # self.show_on_second_monitor()
+        self.setGeometry(0, 0, 1080, 1920)
+        if env=="RASPBERRY":
+            self.showFullScreen()
+        self.show_on_second_monitor()
         icon_path = './resources/icons/namu.png'
         self.icon = QIcon(icon_path)
         self.setWindowIcon(self.icon)
@@ -34,9 +35,9 @@ class MainWindow(QMainWindow):
 
         # 페이지 정의
         self.start_page = StartPage(icon_path)
-        self.camera_widget = CameraWidget()
-        self.result_page_multiple = MultiResultPage()
-        self.result_page_single = SingleResultPage()
+        self.camera_widget = CameraWidget(self.width(), icon_path)
+        self.result_page_multiple = MultiResultPage(self.width())
+        self.result_page_single = SingleResultPage(self.width())
         self.amusement_park_page = AmusementParkPage()
 
         # Stacked Widget에 Attach
