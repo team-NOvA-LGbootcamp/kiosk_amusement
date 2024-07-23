@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
 
         # 페이지 정의
         self.start_page = StartPage(icon_path)
-        self.camera_widget = CameraWidget(self.width(), icon_path)
+        self.camera_widget = CameraWidget(self.width())
         self.result_page_multiple = MultiResultPage(self.width())
         self.result_page_single = SingleResultPage(self.width())
         self.amusement_park_page = AmusementParkPage()

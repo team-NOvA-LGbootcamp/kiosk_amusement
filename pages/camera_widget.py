@@ -9,7 +9,7 @@ import math
 class CameraWidget(QWidget):
     switch_page = pyqtSignal(dict)
 
-    def __init__(self, width, icon_path):
+    def __init__(self, width):
         super().__init__()
         self.window_width = width
         self.display_countdown = False
@@ -22,9 +22,6 @@ class CameraWidget(QWidget):
         
         self.appbar_label = QLabel()
         self.appbar_label.setFixedHeight(50)
-        pixmap = QPixmap(icon_path)  # 아이콘 이미지 경로
-        self.appbar_label.setPixmap(pixmap)
-        self.appbar_label.setAlignment(Qt.AlignCenter)
         self.image_label = QLabel(self)
         self.image_label.setAlignment(Qt.AlignCenter)
         self.countdown_label = QLabel(self)
@@ -33,7 +30,7 @@ class CameraWidget(QWidget):
         self.countdown_label.setText("")
         
         self.lowbar_label = QLabel()
-        self.lowbar_label.setFixedHeight(50)
+        self.lowbar_label.setFixedHeight(100)
         layout = QVBoxLayout()
         layout.addWidget(self.appbar_label)
         layout.addWidget(self.image_label)
@@ -186,7 +183,7 @@ class CameraWidget(QWidget):
     def display_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         h, w, ch = frame.shape
-        ratio = self.window_width-30 / w
+        ratio = (self.window_width-30) / w
         frame = cv2.resize(frame,(int(w*ratio),int(h*ratio)))
         h, w, ch = frame.shape
         q_image = QImage(frame.data, w, h, w * ch, QImage.Format_RGB888)
