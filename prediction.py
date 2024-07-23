@@ -36,6 +36,9 @@ class Predictor:
             if not self.interpreters:
                 raise ValueError("No interpreters were loaded. Check the model path and file extensions.")
 
+        elif self.env == "DEV":
+            print("DEV mode")
+
         print("\033[91mmodel is loaded\033[0m")
 
         self.IMG_SIZE = 224
@@ -48,8 +51,18 @@ class Predictor:
         return img
 
     def predict_image(self, face_image):
+
         dict_age_predictions = {}
         dict_gender_predictions = {}
+
+        # DEV
+        if self.env == "DEV":
+            print("DEV mode")
+            for k in face_image.keys():
+                dict_age_predictions[k] = int(np.random.rand(1)[0]*70)
+                dict_gender_predictions[k] = 0 if k%2 == 0 else 1
+            return dict_age_predictions, dict_gender_predictions
+
         for face_id, img in face_image.items():
             age_predictions = []
             gender_predictions = []
@@ -121,6 +134,10 @@ class RelationPredictor:
 
             if not self.interpreter:
                 raise ValueError("No interpreter were loaded. Check the model path and file extensions.")
+            
+        # DEV
+        elif self.env == "DEV":
+            print("DEV mode")
 
         print("\033[91mmodel is loaded\033[0m")
 
@@ -146,6 +163,19 @@ class RelationPredictor:
         face_id_combinations = list(combinations(face_images.keys(), 2))
 
         relation_proportion = np.array([0.0, 0.0, 0.0])
+
+        # DEV
+        if self.env == "DEV":
+            random_values = np.random.rand(3)
+            normalized_values =  random_values / random_values.sum()
+            relation_prediction_result = {
+                    "friend": normalized_values[0],
+                    "family": normalized_values[1],
+                    "couple": normalized_values[2],
+                }
+
+            return relation_prediction_result
+
 
         for face_id1, face_id2 in face_id_combinations:
             face_image_1 = face_images[face_id1]
