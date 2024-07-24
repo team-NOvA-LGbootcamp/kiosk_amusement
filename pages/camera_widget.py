@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QTimer, pyqtSignal, Qt, QSize
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
 from PyQt5.QtCore import QUrl
 import cv2
 import numpy as np
@@ -19,8 +19,8 @@ class CameraWidget(QWidget):
         self.mp_face_detection = mp.solutions.face_detection
         self.face_detection = self.mp_face_detection.FaceDetection(min_detection_confidence=0.2)
         self.cap = cv2.VideoCapture(0)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+        # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+        # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         print(f'({self.cap.get(cv2.CAP_PROP_FRAME_WIDTH),self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)})')
         
@@ -45,21 +45,40 @@ class CameraWidget(QWidget):
         self.camera_shutter.setMedia(content)
 
         self.appbar_label = QLabel()
-        self.appbar_label.setFixedHeight(50)
+        self.appbar_label.setFixedHeight(100)
+        self.appbar_label.setText("NAMU")
+        self.appbar_label.setObjectName('bar_label')
+        self.appbar_label.setAlignment(Qt.AlignCenter)
+
         self.image_label = QLabel(self)
-        self.image_label.setAlignment(Qt.AlignCenter)
         self.image_label.setObjectName('image_label')
+
+        self.padding_widget = QWidget()
+        self.padding_widget.setFixedHeight(100)
+        self.padding_layout = QHBoxLayout()
+        self.padding_item1 = QLabel()
+        # self.padding_item1.setObjectName('padding_box')
+        self.padding_item2 = QLabel()
+        self.padding_item3 = QLabel()
+        # self.padding_item3.setObjectName('padding_box')
+        self.padding_layout.addWidget(self.padding_item1)
+        self.padding_layout.addWidget(self.padding_item2)
+        self.padding_layout.addWidget(self.padding_item3)
+        self.padding_widget.setLayout(self.padding_layout)
 
         self.countdown_label = QLabel(self)
         self.countdown_label.setAlignment(Qt.AlignCenter)
         self.countdown_label.setObjectName("countdown_label")
+        self.countdown_label.setFixedHeight(100)
         self.countdown_label.setText("")
         
         self.lowbar_label = QLabel()
+        self.lowbar_label.setObjectName("lowbar_label")
         self.lowbar_label.setFixedHeight(100)
         layout = QVBoxLayout()
         layout.addWidget(self.appbar_label)
         layout.addWidget(self.image_label)
+        layout.addWidget(self.padding_widget)
         layout.addWidget(self.countdown_label)
         self.frame = None
         self.original_frame = None  # 모델에 전달할 원본 프레임
