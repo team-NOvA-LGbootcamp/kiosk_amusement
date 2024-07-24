@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
 
             # 폰트 및 색상 설정
             fonts = {
-                "digital": ImageFont.truetype("./resources/fonts/digital_font.ttf", 30),
+                "digital": ImageFont.truetype("./resources/fonts/digital_font.ttf", 35),
                 "namu": ImageFont.truetype("./resources/fonts/Cafe24Dongdong-v2.0.ttf", 50),
                 "nova": ImageFont.truetype("./resources/fonts/Cafe24Dongdong-v2.0.ttf", 15)
             }

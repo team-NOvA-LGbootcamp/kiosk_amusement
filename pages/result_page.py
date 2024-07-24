@@ -82,7 +82,7 @@ class MultiResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.3/num_faces, self.window_width*0.3/num_faces, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.5/num_faces, self.window_width*0.5/num_faces, Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
             info_label.setObjectName('info_label')
