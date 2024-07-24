@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QWidget, QScrollArea, QPushButton, QSizePolicy
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtCore import Qt, pyqtSignal, QSize
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtCore import Qt, pyqtSignal, QSize, QUrl
 import cv2
+import os
 
 class MultiResultPage(QWidget):
     relation_clicked = pyqtSignal(str)
@@ -41,6 +43,14 @@ class MultiResultPage(QWidget):
         self.back_button = QPushButton("처음으로 돌아가기")
         self.back_button.setObjectName("back_button")
         self.layout.addWidget(self.back_button)
+
+        # 음성
+        self.voice_player = QMediaPlayer()
+        self.voice_player.setVolume(60)
+        file_path = os.path.abspath('./resources/music/multi_select.mp3')
+        url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
+        content = QMediaContent(url)
+        self.voice_player.setMedia(content)
 
     def clear_all_layouts(self):
         # 상단 레이아웃 정리
@@ -104,8 +114,8 @@ class MultiResultPage(QWidget):
         suggestion_label = QLabel(self)
         suggestion_label.setAlignment(Qt.AlignCenter)
         suggestion_label.setObjectName("suggestion_label")
-        suggestion_label.setText("혹시 이렇게 오셨나요?")
-        suggestion_label.setFixedHeight(50)
+        suggestion_label.setText("혹시 이렇게 함께 오셨나요?<br>아래 예측 결과 중에서 정답을 선택해 주세요!")
+        suggestion_label.setFixedHeight(130)
         self.results_layout.addWidget(suggestion_label)
 
         # 관계 예측 결과 표시
@@ -134,6 +144,7 @@ class MultiResultPage(QWidget):
 
             relation_button.clicked.connect(lambda _, r=relation: self.relation_clicked.emit(r))
             self.results_layout.addWidget(relation_button)
+        self.voice_player.play()
 
 
 class SingleResultPage(QWidget):
@@ -174,6 +185,14 @@ class SingleResultPage(QWidget):
         self.main_layout.addWidget(self.top_widget)
         self.main_layout.addWidget(self.recommend_button)
         self.main_layout.addWidget(self.back_button)
+
+        # 음성
+        self.voice_player = QMediaPlayer()
+        self.voice_player.setVolume(60)
+        file_path = os.path.abspath('./resources/music/single_select.mp3')
+        url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
+        content = QMediaContent(url)
+        self.voice_player.setMedia(content)
 
 
     def set_prediction_results(self, age_predictions, gender_predictions, detected_faces):
@@ -218,6 +237,7 @@ class SingleResultPage(QWidget):
         under_bar = QLabel()
         under_bar.setFixedHeight(100)
         self.top_layout.addWidget(under_bar)
+        self.voice_player.play()
 
     def clear_all_layouts(self):
         # 상단 레이아웃 정리

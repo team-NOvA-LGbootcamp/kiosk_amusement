@@ -194,7 +194,6 @@ class AmusementParkPage(QWidget):
         self.qrcode_label.setFixedSize(qr_size_w, qr_size_h)
 
         if os.path.exists(photo_path):
-            print(self.window_width*0.6, self.window_width*0.4)
             pixmap = QPixmap(photo_path)
             self.photo_label.setPixmap(pixmap.scaled(photo_size_w, photo_size_h))
             self.photozone_layout.addWidget(self.photo_label)

@@ -14,6 +14,7 @@ import os
 import requests
 import qrcode
 import json
+from time import time
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 import threading
@@ -54,7 +55,10 @@ class MainWindow(QMainWindow):
 
             # 페이지 정의
             self.start_page = StartPage(icon_path)
+            start = time()
             self.camera_widget = CameraWidget(self.width())
+            end = time()
+            print(f'Camera loading time : {end-start:.5f}sec')
             self.result_page_multiple = MultiResultPage(self.width(),self.height())
             self.result_page_single = SingleResultPage(self.width(),self.height())
             self.amusement_park_page = AmusementParkPage(self.width(),self.height())
@@ -155,6 +159,7 @@ class MainWindow(QMainWindow):
         self.mediaPlayer.play() # 카메라 켜지는 화면에서 재생 시작
         self.stacked_widget.setCurrentWidget(self.camera_widget)
         self.camera_widget.start_webcam()  # 카메라 시작
+        self.camera_widget.prev_face_ids = [0] * self.camera_widget.ID_CHECK_FREQUENCY
 
 
     def deco_frame(self,cv2_image):

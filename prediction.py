@@ -95,7 +95,6 @@ class Predictor:
 
                 prediction_results = np.array(prediction_results)
                 mean_prediction = np.mean(prediction_results, axis=0).squeeze()
-                print(f"{face_id}:{mean_prediction}")
                 if mean_prediction.ndim == 1 and mean_prediction.size == 2:
                     age_predictions.append(mean_prediction[0])
                     gender_predictions.append(mean_prediction[1])
