@@ -87,7 +87,8 @@ class MainWindow(QMainWindow):
             # 버튼 효과음 설정
             self.button_press = QMediaPlayer()
             self.button_press.setVolume(30)
-            url = QUrl.fromLocalFile('./resources/music/button.wav')  # 음악 파일 경로 지정
+            file_path = os.path.abspath('./resources/music/button.wav')
+            url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
             content = QMediaContent(url)
             self.button_press.setMedia(content)
 
@@ -137,7 +138,8 @@ class MainWindow(QMainWindow):
 
             self.button_press = QMediaPlayer()
             self.button_press.setVolume(30)
-            url = QUrl.fromLocalFile('./resources/music/button.wav')  # 음악 파일 경로 지정
+            file_path = os.path.abspath('./resources/music/button.wav')
+            url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
             content = QMediaContent(url)
             self.button_press.setMedia(content)
 
