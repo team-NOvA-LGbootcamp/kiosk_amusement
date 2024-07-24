@@ -94,6 +94,9 @@ class MultiResultPage(QWidget):
             face_layout.addWidget(info_label)
 
             face_list_layout.addLayout(face_layout)
+        padding = QLabel()
+        padding.setFixedHeight(self.window_height*0.05)
+        self.top_layout.addWidget(padding)
         face_list_widget.setLayout(face_list_layout)
         self.top_layout.addWidget(face_list_widget)
         
@@ -207,7 +210,7 @@ class SingleResultPage(QWidget):
             face_layout.addWidget(info_label)
 
             face_layout.setAlignment(Qt.AlignCenter)
-
+        
         prediction_widget.setLayout(face_layout)
         self.top_layout.addWidget(prediction_widget)
 
