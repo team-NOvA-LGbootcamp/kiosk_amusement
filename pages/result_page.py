@@ -124,7 +124,7 @@ class MultiResultPage(QWidget):
             icon_path = relation_icons.get(relation, './resources/icons/default.png')
             icon = QIcon(icon_path)
             relation_button.setIcon(icon)
-            relation_button.setIconSize(QSize(24, 24))  # 아이콘 크기 설정
+            relation_button.setIconSize(QSize(36, 36))  # 아이콘 크기 설정
 
             # 텍스트와 아이콘 설정
             relation_text = f"{relation_labels.get(relation, 'Unknown')}: {prob*100:.2f}%"

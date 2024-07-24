@@ -147,7 +147,7 @@ QPushButton#relation_button:pressed {
 }
 
 QPushButton#recommend_button {
-    font-size: 24px;
+    font-size: 36px;
     color: black;
     background-color: #ffffff;
     border: 5px solid #f08080;
@@ -156,7 +156,7 @@ QPushButton#recommend_button {
 }
 
 QPushButton#recommend_button:hover {
-    font-size: 24px;
+    font-size: 36px;
     color: black;
     background-color: #eeeeee;
     border: 5px solid #ff0000;
@@ -165,7 +165,7 @@ QPushButton#recommend_button:hover {
 }
 
 QPushButton#recommend_button:pressed {
-    font-size: 24px;
+    font-size: 36px;
     color: black;
     background-color: #e2e2e2;
     border: 5px solid #ff0000;
@@ -182,7 +182,7 @@ QLabel#countdown_label {
 
 QLabel#top_bar_label {
     color: #f08080;
-    font-size: 36px;
+    font-size: 48px;
     font-weight: bold;
     background-color: #ffffff;
     text-align: center;
@@ -190,25 +190,25 @@ QLabel#top_bar_label {
 }
 
 QLabel#result_label {
-    font-size: 36px;
+    font-size: 48px;
     color: #f08080;
     text-align: center;
 }
 
 QLabel#info_label {
-    font-size: 24px;
+    font-size: 36px;
     color: black;
     text-align: center;
 }
 
 QLabel#single_info_label {
-    font-size: 36px;
+    font-size: 48px;
     color: black;
     text-align: center;
 }
 
 QLabel#suggestion_label {
-    font-size: 36px;
+    font-size: 48px;
     color: #f08080;
     text-align: center;
 }
