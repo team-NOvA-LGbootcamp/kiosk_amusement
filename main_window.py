@@ -37,10 +37,11 @@ class MainWindow(QMainWindow):
             self.setGeometry(0, 0, 540, 960)
             self.setFixedSize(540, 960)
         else:
-            # self.setGeometry(0, 0, 1080, 1920)
-            # self.show_on_second_monitor()
-            self.setGeometry(0, 0, 540, 960)
-            self.setFixedSize(540, 960)
+            self.setGeometry(0, 0, 1080, 1920)
+            self.show_on_second_monitor()
+            # self.setGeometry(0, 0, 540, 960)
+            # self.setFixedSize(540, 960)
+
 
         if env=="RASPBERRY" or env=="WINDOWS":
             icon_path = './resources/icons/namu.png'
@@ -56,7 +57,7 @@ class MainWindow(QMainWindow):
             self.camera_widget = CameraWidget(self.width())
             self.result_page_multiple = MultiResultPage(self.width(),self.height())
             self.result_page_single = SingleResultPage(self.width(),self.height())
-            self.amusement_park_page = AmusementParkPage()
+            self.amusement_park_page = AmusementParkPage(self.width(),self.height())
 
             # Stacked Widget에 Attach
             self.stacked_widget.addWidget(self.start_page)
@@ -106,7 +107,7 @@ class MainWindow(QMainWindow):
             self.camera_widget = DevPage()
             self.result_page_multiple = MultiResultPage(self.width(),self.height())
             self.result_page_single = SingleResultPage(self.width(),self.height())
-            self.amusement_park_page = AmusementParkPage()
+            self.amusement_park_page = AmusementParkPage(self.width(),self.height())
 
             # Stacked Widget에 Attach
             self.stacked_widget.addWidget(self.start_page)
@@ -242,7 +243,7 @@ class MainWindow(QMainWindow):
                 response = requests.post(url, headers=headers, files=files)
 
             result = response.json()
-
+            # print(result)
             if not result['success']:
                 raise Exception("image upload fail")
 
