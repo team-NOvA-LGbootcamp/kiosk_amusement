@@ -21,12 +21,14 @@ rides_name = {
 class AmusementParkPage(QWidget):
     recommendation_complete = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, width, height):
         super().__init__()
+        self.window_width = width
+        self.window_height = height
+        self.recbox_width = self.window_width*0.3
+        self.recbox_height = self.window_height*0.1
 
         self.recommendation_res= []
-        self.recbox_width = self.width()*0.28
-        self.recbox_height = self.height()*0.36
 
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(0)
@@ -39,6 +41,7 @@ class AmusementParkPage(QWidget):
 
         # Intro Text 영역
         intro_widget = QWidget()
+        intro_widget.setFixedHeight(self.window_height/9)
         intro_layout = QVBoxLayout()
         intro_widget.setLayout(intro_layout)
         intro_text_label = QLabel("NOvA Park에 오신 것을 환영합니다.\n아래 어트랙션을 추천드려요!", self)
@@ -48,17 +51,18 @@ class AmusementParkPage(QWidget):
 
         # Recommendation 영역       
         recommendation_widget = QWidget()
+        recommendation_widget.setFixedHeight(self.window_height/7)
         recommendation_widget.setObjectName("outer_recommendation_widget")  # objectName 지정
         recommendation_layout = QHBoxLayout()
         recommendation_widget.setLayout(recommendation_layout)
         
         loading_label = QLabel()
-        loading_label.setFixedSize(int(self.width()*0.15), int(self.width()*0.15))
+        loading_label.setFixedSize(self.window_width*0.15, self.window_width*0.15)
         loading_label.setAlignment(Qt.AlignCenter)
         movie = QMovie('./resources/icons/loading.gif', QByteArray(), self)
         movie.setCacheMode(QMovie.CacheAll)
         loading_label.setMovie(movie)
-        movie.setScaledSize(QSize(int(self.width()*0.15), int(self.width()*0.15)))
+        movie.setScaledSize(QSize(self.window_width*0.15, self.window_width*0.15))
         movie.start()
         recommendation_layout.addWidget(loading_label)
 
@@ -67,46 +71,37 @@ class AmusementParkPage(QWidget):
         parkmap_layout = QVBoxLayout()
         parkmap_widget.setLayout(parkmap_layout)
         parkmap_label = QLabel()
-        parkmap_label.setPixmap(QPixmap("./resources/icons/park.png").scaled(self.width(), self.width()))
+        parkmap_label.setPixmap(QPixmap("./resources/icons/park.png").scaled(self.window_width*0.85, self.window_width*0.85))
         parkmap_label.setScaledContents(True)
-        parkmap_label.setAlignment(Qt.AlignTop)
+        parkmap_label.setAlignment(Qt.AlignCenter)
         parkmap_layout.addWidget(parkmap_label)
         
         # Park Map에 Current Loc 아이콘 추가
         icon1_label = QLabel(parkmap_widget)
-        icon1_label.setFixedSize(int(self.width()*0.07), int(self.width()*0.07))
+        icon1_label.setFixedSize((self.window_width*0.07), (self.window_width*0.07))
         movie = QMovie('./resources/icons/current_location.gif', QByteArray(), self)
         movie.setCacheMode(QMovie.CacheAll)
-        movie.setScaledSize(QSize(int(self.width()*0.07), int(self.width()*0.07)))
+        movie.setScaledSize(QSize(self.window_width*0.07,self.window_width*0.07))
         icon1_label.setMovie(movie)
-        icon1_label.move(int(self.width()*0.47), int(self.height()*0.65)) # 이미지 위치 설정
+        icon1_label.move(self.window_width*0.59, self.window_width*0.648) # 이미지 위치 설정
         movie.start()
 
         # Park Map에 ghost 이미지 추가
         icon2_label = QLabel(parkmap_widget)
-        icon2_label.setFixedSize(int(self.width()*0.08), int(self.width()*0.08))
-        icon2_label.setPixmap(QPixmap("./resources/icons/ghost.png").scaled(self.width()*0.08, self.width()*0.08))
-        icon2_label.move(int(self.width()*0.52), int(self.height()*0.3)) # 이미지 위치 설정
+        icon2_label.setFixedSize((self.window_width*0.07), (self.window_width*0.07))
+        icon2_label.setPixmap(QPixmap("./resources/icons/ghost.png").scaled(self.window_width*0.07, self.window_width*0.07))
+        icon2_label.move((self.window_width*0.65), (self.window_height*0.18)) # 이미지 위치 설정
         
         # QR코드 영역
-        photozone_widget = QWidget()
-        photozone_layout = QHBoxLayout()
-        photozone_widget.setLayout(photozone_layout)
-
-        self.photo_label = QLabel()
-        self.photo_label.setFixedSize(self.width()*0.6, self.width()*0.4)
-        self.photo_label.setAlignment(Qt.AlignCenter)
-        photozone_layout.addWidget(self.photo_label)
-        self.qrcode_label = QLabel()
-        self.qrcode_label.setFixedSize(self.width()*0.2, self.width()*0.2)
-        self.photo_label.setAlignment(Qt.AlignCenter)
-        photozone_layout.addWidget(self.qrcode_label)
+        self.photozone_widget = QWidget()
+        self.photozone_layout = QHBoxLayout()
+        self.photozone_widget.setLayout(self.photozone_layout)
         
         # 각 영역을 메인 레이아웃에 추가
         main_layout.addWidget(intro_widget)
         main_layout.addWidget(recommendation_widget)
         main_layout.addWidget(parkmap_widget)
-        main_layout.addWidget(photozone_widget)
+        main_layout.addWidget(self.photozone_widget)
         main_layout.setSpacing(0)
 
         # Back 버튼
@@ -133,35 +128,56 @@ class AmusementParkPage(QWidget):
 
         for i, res in enumerate(self.recommendation_res):
             box = QWidget()
-            box.setFixedSize(int(self.recbox_width), int(self.recbox_height))
             box_layout = QVBoxLayout()
             box.setLayout(box_layout)
-            box_layout.setContentsMargins(0,0,0,0)
 
-            num = random.randrange(2, 10)
-            title_label = QLabel(f"{i+1}: {rides_name[res]}\n대기시간: {num*15}분")
+            num = random.randrange(2, 9)
+            title_label = QLabel(f"{i+1}. {rides_name[res]}\n대기시간: {num*15}분")
             title_label.setObjectName('attraction_time_label')
+            title_label.setFixedHeight(self.window_height//18)
             title_label.setAlignment(Qt.AlignTop | Qt.AlignCenter)
             box_layout.addWidget(title_label)
 
             image_label = QLabel()
             pixmap = QPixmap(f"./resources/icons/{res}.png")  # 각 박스에 맞는 이미지 파일 경로 설정
-            image_label.setPixmap(pixmap.scaled(int(self.width()*0.14), int(self.width()*0.14)))
+            image_label.setPixmap(pixmap.scaled(self.window_width*0.1,self.window_width*0.1))
             image_label.setAlignment(Qt.AlignCenter | Qt.AlignTop)
             box_layout.addWidget(image_label)
 
+            box_layout.setContentsMargins(0,0,0,0)
             recommendation_layout.addWidget(box)
+            recommendation_layout.setContentsMargins(0,0,0,0)
+            
 
         self.recommendation_complete.emit()
     
     def update_qrcode_image(self):
+
+        for i in reversed(range(self.photozone_layout.count())):
+            item = self.photozone_layout.itemAt(i)
+            if item is not None:
+                widget = item.widget()
+                if widget is not None:
+                    widget.setParent(None)
+
+
         photo_path = "./resources/qr/image.jpg"
         qr_path = "./resources/qr/qr.png"
+        photo_size_w, photo_size_h = self.window_width*0.5, self.window_width*0.35
+        qr_size_w, qr_size_h = self.window_width*0.15, self.window_width*0.15
+        self.photo_label = QLabel()
+        self.photo_label.setFixedSize(photo_size_w, photo_size_h)
+        
+        self.qrcode_label = QLabel()
+        self.qrcode_label.setFixedSize(qr_size_w, qr_size_h)
+
         if os.path.exists(photo_path):
+            print(self.window_width*0.6, self.window_width*0.4)
             pixmap = QPixmap(photo_path)
-            self.photo_label.setPixmap(pixmap.scaled(self.width()*0.6, self.width()*0.4))
+            self.photo_label.setPixmap(pixmap.scaled(photo_size_w, photo_size_h))
+            self.photozone_layout.addWidget(self.photo_label)
+
         if os.path.exists(qr_path):
             pixmap_2 = QPixmap(qr_path)
-            self.qrcode_label.setPixmap(pixmap_2.scaled(self.width()*0.2, self.width()*0.2))
-
-        
+            self.qrcode_label.setPixmap(pixmap_2.scaled(qr_size_w, qr_size_h))
+            self.photozone_layout.addWidget(self.qrcode_label)

@@ -115,7 +115,7 @@ QPushButton#capture_button:disabled {
 }
 
 QPushButton#relation_button {
-    font-size: 24px;
+    font-size: 36px;
     font-weight: bold;
     color: black;
     background-color: #ffffff;
@@ -124,7 +124,7 @@ QPushButton#relation_button {
 }
 
 QPushButton#relation_button:hover {
-    font-size: 24px;
+    font-size: 36px;
     font-weight: bold;
     color: black;
     background-color: #eeeeee;
@@ -133,7 +133,7 @@ QPushButton#relation_button:hover {
 }
 
 QPushButton#relation_button:pressed {
-    font-size: 24px;
+    font-size: 36px;
     font-weight: bold;
     color: black;
     background-color: #e2e2e2;
@@ -209,18 +209,18 @@ QLabel#suggestion_label {
 }
 
 QLabel#attraction_guide_label {
-    font-size: 32px; 
+    font-size: 48px; 
     font-weight: bold; 
     color: #f08080
 }
 
 QLabel#attraction_time_label {
-    font-size: 20px; 
+    font-size: 36px; 
     color: #953553;
 }
 
 QWidget#outer_recommendation_widget {
-    border: 1.5px solid #F08080;
+    border: 2px dotted #F08080;
     border-radius: 6px;
 }
 
