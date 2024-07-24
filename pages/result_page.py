@@ -31,7 +31,7 @@ class MultiResultPage(QWidget):
         self.layout.addWidget(self.scroll_area)
 
         # 뒤로가기 버튼
-        self.back_button = QPushButton("Back to Start Page")
+        self.back_button = QPushButton("처음으로 돌아가기")
         self.back_button.setObjectName("back_button")
         self.layout.addWidget(self.back_button)
 
@@ -148,7 +148,7 @@ class SingleResultPage(QWidget):
         self.top_widget.setLayout(self.top_layout)
 
         # 뒤로가기 버튼
-        self.back_button = QPushButton("Back to Start Page")
+        self.back_button = QPushButton("처음으로 돌아가기")
         self.back_button.setObjectName("back_button")
 
         # 초기 상태 설정
