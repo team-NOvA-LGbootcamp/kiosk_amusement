@@ -100,7 +100,7 @@ class AmusementParkPage(QWidget):
         main_layout.setSpacing(0)
 
         # Back 버튼
-        self.back_button = QPushButton("Back to Start Page")
+        self.back_button = QPushButton("처음으로 돌아가기")
         self.back_button.setObjectName("back_button")
         main_layout.addWidget(self.back_button)
     
