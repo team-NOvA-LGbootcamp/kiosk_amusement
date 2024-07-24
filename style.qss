@@ -8,6 +8,16 @@ QWidget#background {
     border: 10px solid #f08080;
 }
 
+QWidget#top_widget {
+    background-color: #ffffff;
+    border: 3px solid #f08080;
+}
+
+QWidget#results_widget {
+    background-color: #ffffff;
+    border: 3px solid #f08080;
+}
+
 /* 타이틀 스타일 */
 QLabel#title_label {
     font-size: 50px;
@@ -18,13 +28,65 @@ QLabel#title_label {
 
 /* 버튼 스타일 */
 
-QPushButton#start_button, QPushButton#back_button {
+QPushButton#start_button {
     font-size: 24px;
     font-weight: bold;
     color: white;
     background-color: #f08080;
     border-radius: 10px;
     padding: 10px;
+    height: 40px;
+}
+
+QPushButton#start_button:hover {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #f08080;
+    border: 3px solid #ffffff;
+    padding: 10px;
+    height: 40px;
+}
+
+QPushButton#start_button:pressed {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #f08080;
+    border: 3px solid #ffffff;
+    padding: 10px;
+    height: 40px;
+}
+
+QPushButton#back_button {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #f08080;
+    border-radius: 10px;
+    padding: 10px;
+    height: 70px;
+}
+
+QPushButton#back_button:hover {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #f68080;
+    border: 3px solid #ffffff;
+    padding: 10px;
+    height: 70px;
+}
+
+QPushButton#back_button:pressed {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #fd8080;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+    padding: 10px;
+    height: 70px;
 }
 
 QPushButton#capture_button {
@@ -62,7 +124,7 @@ QPushButton#relation_button {
     font-weight: bold;
     color: black;
     background-color: #ffffff;
-    border: 8px solid #f08080;
+    border: 5px solid #f08080;
     padding: 10px;
 }
 
@@ -70,8 +132,17 @@ QPushButton#relation_button:hover {
     font-size: 24px;
     font-weight: bold;
     color: black;
-    background-color: #ffffff;
-    border: 8px solid #ff0000;
+    background-color: #eeeeee;
+    border: 5px solid #ff0000;
+    padding: 10px;
+}
+
+QPushButton#relation_button:pressed {
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+    background-color: #e2e2e2;
+    border: 5px solid #ff0000;
     padding: 10px;
 }
 
@@ -79,16 +150,27 @@ QPushButton#recommend_button {
     font-size: 24px;
     color: black;
     background-color: #ffffff;
-    border: 8px solid #f08080;
+    border: 5px solid #f08080;
     padding: 10px;
+    height: 70px;
 }
 
 QPushButton#recommend_button:hover {
     font-size: 24px;
     color: black;
-    background-color: #ffffff;
-    border: 8px solid #ff0000;
+    background-color: #eeeeee;
+    border: 5px solid #ff0000;
     padding: 10px;
+    height: 70px;
+}
+
+QPushButton#recommend_button:pressed {
+    font-size: 24px;
+    color: black;
+    background-color: #e2e2e2;
+    border: 5px solid #ff0000;
+    padding: 10px;
+    height: 70px;
 }
 
 QLabel#countdown_label {
@@ -96,6 +178,15 @@ QLabel#countdown_label {
     font-size: 48px;
     font-weight: bold;
     text-align: center;
+}
+
+QLabel#top_bar_label {
+    color: #f08080;
+    font-size: 36px;
+    font-weight: bold;
+    background-color: #ffffff;
+    text-align: center;
+    border: 3px solid #f08080;
 }
 
 QLabel#result_label {
@@ -106,6 +197,12 @@ QLabel#result_label {
 
 QLabel#info_label {
     font-size: 18px;
+    color: black;
+    text-align: center;
+}
+
+QLabel#single_info_label {
+    font-size: 24px;
     color: black;
     text-align: center;
 }

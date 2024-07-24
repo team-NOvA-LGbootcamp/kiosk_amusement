@@ -54,8 +54,8 @@ class MainWindow(QMainWindow):
             # 페이지 정의
             self.start_page = StartPage(icon_path)
             self.camera_widget = CameraWidget(self.width())
-            self.result_page_multiple = MultiResultPage(self.width())
-            self.result_page_single = SingleResultPage(self.width())
+            self.result_page_multiple = MultiResultPage(self.width(),self.height())
+            self.result_page_single = SingleResultPage(self.width(),self.height())
             self.amusement_park_page = AmusementParkPage()
 
             # Stacked Widget에 Attach
@@ -82,6 +82,14 @@ class MainWindow(QMainWindow):
             content = QMediaContent(url)
             self.mediaPlayer.setMedia(content)
             # self.mediaPlayer.play()
+
+            # 버튼 효과음 설정
+            self.button_press = QMediaPlayer()
+            self.button_press.setVolume(30)
+            url = QUrl.fromLocalFile('./resources/music/button.wav')  # 음악 파일 경로 지정
+            content = QMediaContent(url)
+            self.button_press.setMedia(content)
+
         else:
             icon_path = './resources/icons/namu.png'
             self.icon = QIcon(icon_path)
@@ -94,8 +102,8 @@ class MainWindow(QMainWindow):
             # 페이지 정의
             self.start_page = StartPage(icon_path)
             self.camera_widget = DevPage()
-            self.result_page_multiple = MultiResultPage(self.width())
-            self.result_page_single = SingleResultPage(self.width())
+            self.result_page_multiple = MultiResultPage(self.width(),self.height())
+            self.result_page_single = SingleResultPage(self.width(),self.height())
             self.amusement_park_page = AmusementParkPage()
 
             # Stacked Widget에 Attach
@@ -125,6 +133,12 @@ class MainWindow(QMainWindow):
             self.mediaPlayer.setMedia(content)
             # self.mediaPlayer.play()
 
+            self.button_press = QMediaPlayer()
+            self.button_press.setVolume(30)
+            url = QUrl.fromLocalFile('./resources/music/button.wav')  # 음악 파일 경로 지정
+            content = QMediaContent(url)
+            self.button_press.setMedia(content)
+
     def show_on_second_monitor(self):
         app = QApplication.instance()
         screen = app.screens()[1] if len(app.screens()) > 1 else app.primaryScreen()
@@ -132,6 +146,7 @@ class MainWindow(QMainWindow):
         self.showFullScreen()
 
     def show_camera_page(self):
+        self.button_press.play()
         self.mediaPlayer.play() # 카메라 켜지는 화면에서 재생 시작
         self.stacked_widget.setCurrentWidget(self.camera_widget)
         self.camera_widget.start_webcam()  # 카메라 시작
@@ -261,7 +276,6 @@ class MainWindow(QMainWindow):
             print(e)
 
     def show_result_page(self, detected_faces):
-
         self.camera_widget.stop_webcam()  # 웹캠 정지
         self.age_predictions, self.gender_predictions = self.model.predict_image(detected_faces)
         if len(self.age_predictions.keys()) > 1:
@@ -273,6 +287,7 @@ class MainWindow(QMainWindow):
             self.stacked_widget.setCurrentWidget(self.result_page_single)
 
     def show_start_page(self):
+        self.button_press.play()
         self.delete_img_url()
         self.stacked_widget.setCurrentWidget(self.start_page)
         self.result_page_multiple.clear_all_layouts()
@@ -282,6 +297,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.amusement_park_page)
 
     def handle_relation_clicked(self, relation):
+        self.button_press.play()
         self.generate_qr(self.camera_widget.frame_save)
         self.amusement_park_page.make_recommendation(self.age_predictions,
                                                         self.gender_predictions,
@@ -290,6 +306,7 @@ class MainWindow(QMainWindow):
 
 
     def handle_single_clicked(self):
+        self.button_press.play()
         self.generate_qr(self.camera_widget.frame_save)
         self.amusement_park_page.make_recommendation(self.age_predictions,
                                                         self.gender_predictions,
@@ -298,10 +315,12 @@ class MainWindow(QMainWindow):
 
     ######dev method#####
     def show_camera_page_dev(self):
+        self.button_press.play()
         self.mediaPlayer.play() # 카메라 켜지는 화면에서 재생 시작
         self.stacked_widget.setCurrentWidget(self.camera_widget)
 
     def show_result_dev_single(self):
+        self.button_press.play()
         img = cv2.imread('resources\icons\dev_image.jpg')
         detected_faces = {1:np.array(img)}
         self.age_predictions, self.gender_predictions = self.model.predict_image(detected_faces)
@@ -309,6 +328,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.result_page_single)
 
     def show_result_dev_multi(self):
+        self.button_press.play()
         img = cv2.imread('resources\icons\dev_image.jpg')
         img2 = cv2.imread('resources\icons\dev_image_2.png')
         detected_faces = {1:np.array(img), 2:np.array(img2)}
@@ -318,6 +338,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.result_page_multiple)
 
     def handle_relation_clicked_dev(self, relation):
+        self.button_press.play()
         img = cv2.imread('resources\icons\dev_image.jpg')
         self.generate_qr(img)
         self.amusement_park_page.make_recommendation(self.age_predictions,
@@ -327,6 +348,7 @@ class MainWindow(QMainWindow):
 
 
     def handle_single_clicked_dev(self):
+        self.button_press.play()
         img = cv2.imread('resources\icons\dev_image.jpg')
         self.generate_qr(img)
         self.amusement_park_page.make_recommendation(self.age_predictions,

@@ -6,29 +6,36 @@ import cv2
 class MultiResultPage(QWidget):
     relation_clicked = pyqtSignal(str)
 
-    def __init__(self, width):
+    def __init__(self, width, height):
         super().__init__()
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.window_width = width
+        self.window_height = height
 
         # 상단 레이아웃 (얼굴 사진 및 나이/성별 예측 결과)
+        self.top_bar = QLabel()
+        self.top_bar.setFixedHeight(self.window_height*0.1)
+        self.top_bar.setText('환영합니다!')
+        self.top_bar.setObjectName('top_bar_label')
+        self.top_bar.setAlignment(Qt.AlignCenter)
         self.top_layout = QVBoxLayout()
         self.top_widget = QWidget()
         self.top_widget.setLayout(self.top_layout)
-        self.top_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        # self.top_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.top_widget.setObjectName('top_widget')
+        self.top_widget.setFixedHeight(self.window_height*0.3)
+        self.layout.addWidget(self.top_bar)
         self.layout.addWidget(self.top_widget)
 
         # 결과 레이아웃
         self.results_layout = QVBoxLayout()
         self.results_widget = QWidget()
         self.results_widget.setLayout(self.results_layout)
+        self.results_widget.setObjectName('results_widget')
+        self.results_widget.setFixedHeight(self.window_height*0.4)
+        self.layout.addWidget(self.results_widget)
         
-        # 스크롤 영역 (관계 예측 결과)
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setWidget(self.results_widget)
-        self.layout.addWidget(self.scroll_area)
 
         # 뒤로가기 버튼
         self.back_button = QPushButton("처음으로 돌아가기")
@@ -52,12 +59,6 @@ class MultiResultPage(QWidget):
 
     def set_prediction_results(self, age_predictions, gender_predictions, detected_faces, relation_predictions):
         self.clear_all_layouts()
-
-        # result_label = QLabel(self)
-        # result_label.setAlignment(Qt.AlignCenter)
-        # result_label.setObjectName("result_label")
-        # result_label.setText("이렇게 함께 오신 것 같아요!")
-        # self.top_layout.addWidget(result_label)
 
         # 얼굴 사진 및 나이/성별 예측 결과 추가
         face_list_widget = QWidget()
@@ -95,13 +96,15 @@ class MultiResultPage(QWidget):
             face_list_layout.addLayout(face_layout)
         face_list_widget.setLayout(face_list_layout)
         self.top_layout.addWidget(face_list_widget)
+        
 
         suggestion_label = QLabel(self)
         suggestion_label.setAlignment(Qt.AlignCenter)
         suggestion_label.setObjectName("suggestion_label")
         suggestion_label.setText("혹시 이렇게 오셨나요?")
-        self.top_layout.addWidget(suggestion_label)
-        
+        suggestion_label.setFixedHeight(50)
+        self.results_layout.addWidget(suggestion_label)
+
         # 관계 예측 결과 표시
         relation_icons = {
             'friend': './resources/icons/friend.png',
@@ -133,27 +136,42 @@ class MultiResultPage(QWidget):
 class SingleResultPage(QWidget):
     single_clicked = pyqtSignal()
 
-    def __init__(self, width):
+    def __init__(self, width, height):
         super().__init__()
         self.window_width = width
+        self.window_height = height
 
         # 기본 레이아웃 및 위젯 생성
         self.main_layout = QVBoxLayout()
         self.setLayout(self.main_layout)
 
         # 상단 레이아웃을 위한 위젯
+        self.top_bar = QLabel()
+        self.top_bar.setFixedHeight(100)
+        self.top_bar.setText('환영합니다!')
+        self.top_bar.setObjectName('top_bar_label')
+        self.top_bar.setAlignment(Qt.AlignCenter)
         self.top_layout = QVBoxLayout()
         self.top_widget = QWidget()
         self.top_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.top_widget.setObjectName('top_widget')
         self.top_widget.setLayout(self.top_layout)
+
+        self.recommend_button = QPushButton("이 정보로 추천 받기")
+        self.recommend_button.setObjectName("recommend_button")
+        self.recommend_button.clicked.connect(self.single_clicked.emit)
+        
 
         # 뒤로가기 버튼
         self.back_button = QPushButton("처음으로 돌아가기")
         self.back_button.setObjectName("back_button")
 
         # 초기 상태 설정
+        self.main_layout.addWidget(self.top_bar)
         self.main_layout.addWidget(self.top_widget)
+        self.main_layout.addWidget(self.recommend_button)
         self.main_layout.addWidget(self.back_button)
+
 
     def set_prediction_results(self, age_predictions, gender_predictions, detected_faces):
         self.clear_all_layouts()
@@ -177,10 +195,10 @@ class SingleResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.3, self.window_width*0.3, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.5, self.window_width*0.5, Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
-            info_label.setObjectName('info_label')
+            info_label.setObjectName('single_info_label')
             info_label.setAlignment(Qt.AlignCenter)
             info_label.setTextFormat(Qt.RichText)
 
@@ -193,11 +211,7 @@ class SingleResultPage(QWidget):
         prediction_widget.setLayout(face_layout)
         self.top_layout.addWidget(prediction_widget)
 
-        recommend_button = QPushButton("이 정보로 추천 받기")
-        recommend_button.setObjectName("recommend_button")
-        recommend_button.clicked.connect(self.single_clicked.emit)
-        recommend_button.setFixedHeight(100)
-        self.top_layout.addWidget(recommend_button)
+        
         under_bar = QLabel()
         under_bar.setFixedHeight(100)
         self.top_layout.addWidget(under_bar)
