@@ -16,7 +16,7 @@ import qrcode
 import json
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
-
+import threading
 class MainWindow(QMainWindow):
     def __init__(self, model, relation_model, env):
         super().__init__()
@@ -280,6 +280,9 @@ class MainWindow(QMainWindow):
             print(e)
 
     def show_result_page(self, detected_faces):
+        generate_qr_thread = threading.Thread(target=self.generate_qr,args=(self.camera_widget.frame_save,))
+        generate_qr_thread.start()
+        
         self.camera_widget.stop_webcam()  # 웹캠 정지
         self.age_predictions, self.gender_predictions = self.model.predict_image(detected_faces)
         if len(self.age_predictions.keys()) > 1:
@@ -291,6 +294,8 @@ class MainWindow(QMainWindow):
             self.stacked_widget.setCurrentWidget(self.result_page_single)
 
     def show_start_page(self):
+        delete_img_url_thread = threading.Thread(target=self.delete_img_url)
+        delete_img_url_thread.start()
         self.button_press.play()
         self.delete_img_url()
         self.stacked_widget.setCurrentWidget(self.start_page)
@@ -302,7 +307,6 @@ class MainWindow(QMainWindow):
 
     def handle_relation_clicked(self, relation):
         self.button_press.play()
-        self.generate_qr(self.camera_widget.frame_save)
         self.amusement_park_page.make_recommendation(self.age_predictions,
                                                         self.gender_predictions,
                                                         relation)

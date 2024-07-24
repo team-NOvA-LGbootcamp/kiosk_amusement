@@ -8,6 +8,7 @@ import numpy as np
 import mediapipe as mp
 import math
 import os
+
 class CameraWidget(QWidget):
     switch_page = pyqtSignal(dict)
 
@@ -18,8 +19,8 @@ class CameraWidget(QWidget):
         self.mp_face_detection = mp.solutions.face_detection
         self.face_detection = self.mp_face_detection.FaceDetection(min_detection_confidence=0.2)
         self.cap = cv2.VideoCapture(0)
-        # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-        # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         print(f'({self.cap.get(cv2.CAP_PROP_FRAME_WIDTH),self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)})')
         
@@ -183,6 +184,7 @@ class CameraWidget(QWidget):
         ret, frame = self.cap.read()
         if ret:
             frame = cv2.flip(frame, 1)
+            frame = cv2.resize(frame,(640,480))
             self.frame_save = frame.copy() 
             results = self.face_detection.process(frame)
             self.frame = frame.copy()  # 화면에 표시할 프레임
