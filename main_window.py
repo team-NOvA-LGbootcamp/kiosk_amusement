@@ -78,7 +78,8 @@ class MainWindow(QMainWindow):
             # 배경음악 설정
             self.mediaPlayer = QMediaPlayer()
             self.mediaPlayer.setVolume(10)
-            url = QUrl.fromLocalFile('./resources/music/puppy_waltz.mp3')  # 음악 파일 경로 지정
+            file_path = os.path.abspath('./resources/music/puppy_waltz.mp3')
+            url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
             content = QMediaContent(url)
             self.mediaPlayer.setMedia(content)
             # self.mediaPlayer.play()
@@ -128,7 +129,8 @@ class MainWindow(QMainWindow):
             # 배경음악 설정
             self.mediaPlayer = QMediaPlayer()
             self.mediaPlayer.setVolume(30)
-            url = QUrl.fromLocalFile('./resources/music/puppy_waltz.mp3')  # 음악 파일 경로 지정
+            file_path = os.path.abspath('./resources/music/puppy_waltz.mp3')
+            url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
             content = QMediaContent(url)
             self.mediaPlayer.setMedia(content)
             # self.mediaPlayer.play()

@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 import math
-
+import os
 class CameraWidget(QWidget):
     switch_page = pyqtSignal(dict)
 
@@ -30,16 +30,16 @@ class CameraWidget(QWidget):
         self.seconds_player.setVolume(60)
         self.camera_shutter = QMediaPlayer()
         self.camera_shutter.setVolume(70)
-        
-        url = QUrl.fromLocalFile('./resources/music/welcome.mp3')  # 음악 파일 경로 지정
+        file_path = os.path.abspath('./resources/music/welcome.mp3')
+        url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
         content = QMediaContent(url)
         self.welcome_player.setMedia(content)
-
-        url = QUrl.fromLocalFile('./resources/music/3seconds.mp3')  # 음악 파일 경로 지정
+        file_path = os.path.abspath('./resources/music/3seconds.mp3')
+        url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
         content = QMediaContent(url)
         self.seconds_player.setMedia(content)
-
-        url = QUrl.fromLocalFile('./resources/music/camera.mp3')  # 음악 파일 경로 지정
+        file_path = os.path.abspath('./resources/music/camera.mp3')
+        url = QUrl.fromLocalFile(file_path)  # 음악 파일 경로 지정
         content = QMediaContent(url)
         self.camera_shutter.setMedia(content)
 
