@@ -48,14 +48,12 @@ class CameraWidget(QWidget):
         self.appbar_label.setFixedHeight(50)
         self.image_label = QLabel(self)
         self.image_label.setAlignment(Qt.AlignCenter)
+        self.image_label.setObjectName('image_label')
 
         self.countdown_label = QLabel(self)
         self.countdown_label.setAlignment(Qt.AlignCenter)
         self.countdown_label.setObjectName("countdown_label")
         self.countdown_label.setText("")
-        
-        self.label_timer = QTimer()
-        self.label_timer.timeout.connect(self.countdown_label_erase)
         
         self.lowbar_label = QLabel()
         self.lowbar_label.setFixedHeight(100)
@@ -73,19 +71,29 @@ class CameraWidget(QWidget):
         self.capture_button.clicked.connect(self.button_push)
         layout.addWidget(self.capture_button, alignment=Qt.AlignCenter)
         layout.addWidget(self.lowbar_label)
-        self.button_pushed = False
+        
+
+        #타이머
+        self.label_timer = QTimer()
+        self.label_timer.timeout.connect(self.countdown_label_erase)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_image)
-        self.timer.setInterval(30)  # 30ms마다 호출
+        self.timer.setInterval(30)
 
+        self.countdown_timer = QTimer()
+        self.countdown_timer.timeout.connect(self.update_countdown)
+        self.update_layout()
+
+        # 얼굴감지
         self.face_ids = {}
         self.angle_threshold = 20
+
+        # 촬영제어
+        self.button_pushed = False
         self.countdown_seconds = 3
-        
 
-
-        ## 자동촬영 구현
+        # 자동촬영
         self.id_checker = False
         self.id_checker_count = 0
         self.ID_CHECK_FREQUENCY = 8
@@ -96,11 +104,6 @@ class CameraWidget(QWidget):
         self.autotimer.timeout.connect(self.auto_capture)
         self.autotimer.setInterval(self.ID_CHECK_TIME)
         
-
-        self.countdown_timer = QTimer()
-        self.countdown_timer.timeout.connect(self.update_countdown)
-        self.update_layout()
-
         container = QWidget()
         container.setLayout(layout)
         container.setObjectName("background")
@@ -157,7 +160,7 @@ class CameraWidget(QWidget):
 
     def start_countdown(self):
         self.countdown_seconds = 3
-        self.countdown_label.setText("3초간 화면을 응시해주세요")
+        self.countdown_label.setText("3초간 정면을 응시해주세요")
         self.label_timer.start(2000)
         self.display_countdown = True
         self.capture_button.setEnabled(False)
@@ -174,7 +177,7 @@ class CameraWidget(QWidget):
                 self.camera_shutter.play()
                 self.capture_faces()
             else:
-                self.countdown_label.setText("감지된 사람이 없습니다")
+                self.countdown_label.setText("감지된 얼굴이 없습니다")
                 self.label_timer.start(2000)
             self.button_pushed = False
             self.capture_button.setEnabled(True)

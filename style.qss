@@ -3,8 +3,14 @@ QWidget {
     font-family: "Cafe24 Dongdong";
 }
 
+/*
 QWidget#background {
     background-color: #ffffff;
+    border: 10px solid #f08080;
+}
+*/
+
+QWidget#image_label {
     border: 10px solid #f08080;
 }
 
@@ -92,21 +98,10 @@ QPushButton#back_button:pressed {
 QPushButton#capture_button {
     border: 12px solid #000000;
     border-radius: 60px;
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     background-color: #ffffff;
     position: relative;
-}
-
-QPushButton#capture_button::before {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    width: 32px;
-    height: 32px;
-    border-radius: 48px;
-    /* border: 12px solid #f08080; */
-    background-color: #0f8080;
 }
 
 QPushButton#capture_button:pressed {
