@@ -110,7 +110,7 @@ QPushButton#capture_button::before {
 }
 
 QPushButton#capture_button:pressed {
-    background-color: #ffffff; /* 눌렀을 때의 배경 색상 */
+    background-color: #eeeeee; /* 눌렀을 때의 배경 색상 */
     border: 12px solid #f08080; /* 눌렀을 때 외곽 테두리 색상 */
 }
 
