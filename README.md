@@ -1,5 +1,19 @@
 # kiosk_amusement
 
+## 실행 방법
+
+
+```bash
+python3 main.py <COMMAND>
+```
+
+COMMAND:
+```
+RASPBERRY: python3 main.py
+WINDOWS: python3 main.py WINDOWS
+DEV: python3 main.py DEV
+```
+
 ## 라즈베리 파이 환경 설정
 
 ### 화면 설정

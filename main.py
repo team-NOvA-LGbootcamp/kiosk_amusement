@@ -22,6 +22,7 @@ if __name__ == "__main__":
         _env = sys.argv[1] #ex)WINDOWS, RASPBERRY(default), DEV
     except:
         _env = "RASPBERRY"
+    _env = "WINDOWS"
     model = Predictor(AGE_GENDER_MODEL_PATH, env=_env)  # 모델 경로와 환경 설정
     relation_model = RelationPredictor(REALTIONSHIP_MODEL_PATH, env=_env)
     model_end = time()

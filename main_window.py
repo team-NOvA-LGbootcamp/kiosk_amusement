@@ -18,6 +18,8 @@ from time import time
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 import threading
+import random
+
 class MainWindow(QMainWindow):
     def __init__(self, model, relation_model, env):
         super().__init__()
@@ -38,8 +40,10 @@ class MainWindow(QMainWindow):
             self.setGeometry(0, 0, 540, 960)
             self.setFixedSize(540, 960)
         else:
-            self.setGeometry(0, 0, 1080, 1920)
-            self.show_on_second_monitor()
+            self.setGeometry(0, 0, 540, 960)
+            self.setFixedSize(540, 960)
+            # self.setGeometry(0, 0, 1080, 1920)
+            # self.show_on_second_monitor()
             # self.setGeometry(0, 0, 540, 960)
             # self.setFixedSize(540, 960)
 
@@ -164,10 +168,11 @@ class MainWindow(QMainWindow):
 
     def deco_frame(self,cv2_image):
         try:
+            one, two= random.sample(range(1, 10), 2)
             overlays = [
-            {"path": "./resources/icons/deco1.png", "position": (0, 300), "size": (180, 180)},
-            {"path": "./resources/icons/deco2.png", "position": (460, 300), "size": (180, 180)}
-            ]
+            {"path": f"./resources/icons/deco1.png", "position": (0, 300), "size": (180, 180)},
+            {"path": f"./resources/icons/deco2.png", "position": (460, 300), "size": (180, 180)}
+]
             # BGR을 RGB로 변환하고 PIL 이미지로 변환
             cv2_image_rgb = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
             pil_image = Image.fromarray(cv2_image_rgb)

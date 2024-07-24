@@ -17,7 +17,7 @@ class MultiResultPage(QWidget):
 
         # 상단 레이아웃 (얼굴 사진 및 나이/성별 예측 결과)
         self.top_bar = QLabel()
-        self.top_bar.setFixedHeight(self.window_height*0.1)
+        self.top_bar.setFixedHeight(int(self.window_height*0.1))
         self.top_bar.setText('환영합니다!')
         self.top_bar.setObjectName('top_bar_label')
         self.top_bar.setAlignment(Qt.AlignCenter)
@@ -26,7 +26,7 @@ class MultiResultPage(QWidget):
         self.top_widget.setLayout(self.top_layout)
         # self.top_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.top_widget.setObjectName('top_widget')
-        self.top_widget.setFixedHeight(self.window_height*0.3)
+        self.top_widget.setFixedHeight(int(self.window_height*0.3))
         self.layout.addWidget(self.top_bar)
         self.layout.addWidget(self.top_widget)
 
@@ -35,7 +35,7 @@ class MultiResultPage(QWidget):
         self.results_widget = QWidget()
         self.results_widget.setLayout(self.results_layout)
         self.results_widget.setObjectName('results_widget')
-        self.results_widget.setFixedHeight(self.window_height*0.4)
+        self.results_widget.setFixedHeight(int(self.window_height*0.4))
         self.layout.addWidget(self.results_widget)
         
 
@@ -92,7 +92,7 @@ class MultiResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.5/num_faces, self.window_width*0.5/num_faces, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(int(self.window_width*0.5/num_faces), int(self.window_width*0.5/num_faces), Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
             info_label.setObjectName('info_label')
@@ -105,7 +105,7 @@ class MultiResultPage(QWidget):
 
             face_list_layout.addLayout(face_layout)
         padding = QLabel()
-        padding.setFixedHeight(self.window_height*0.05)
+        padding.setFixedHeight(int(self.window_height*0.05))
         self.top_layout.addWidget(padding)
         face_list_widget.setLayout(face_list_layout)
         self.top_layout.addWidget(face_list_widget)
@@ -217,7 +217,7 @@ class SingleResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.5, self.window_width*0.5, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(int(self.window_width*0.5), int(self.window_width*0.5), Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
             info_label.setObjectName('single_info_label')
