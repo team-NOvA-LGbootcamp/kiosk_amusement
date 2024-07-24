@@ -114,8 +114,8 @@ class MainWindow(QMainWindow):
             self.result_page_multiple.back_button.clicked.connect(self.show_start_page)
             self.result_page_single.back_button.clicked.connect(self.show_start_page)
             self.amusement_park_page.back_button.clicked.connect(self.show_start_page)
-            self.result_page_multiple.relation_clicked.connect(self.handle_relation_clicked)
-            self.result_page_single.single_clicked.connect(self.handle_single_clicked)
+            self.result_page_multiple.relation_clicked.connect(self.handle_relation_clicked_dev)
+            self.result_page_single.single_clicked.connect(self.handle_single_clicked_dev)
 
             # 배경음악 설정
             self.mediaPlayer = QMediaPlayer()
@@ -316,3 +316,20 @@ class MainWindow(QMainWindow):
         relation_predictions = self.relation_model.predict_image(detected_faces, self.age_predictions, self.gender_predictions)
         self.result_page_multiple.set_prediction_results(self.age_predictions, self.gender_predictions, detected_faces, relation_predictions)
         self.stacked_widget.setCurrentWidget(self.result_page_multiple)
+
+    def handle_relation_clicked_dev(self, relation):
+        img = cv2.imread('resources\icons\dev_image.jpg')
+        self.generate_qr(img)
+        self.amusement_park_page.make_recommendation(self.age_predictions,
+                                                        self.gender_predictions,
+                                                        relation)
+        self.stacked_widget.setCurrentWidget(self.amusement_park_page)
+
+
+    def handle_single_clicked_dev(self):
+        img = cv2.imread('resources\icons\dev_image.jpg')
+        self.generate_qr(img)
+        self.amusement_park_page.make_recommendation(self.age_predictions,
+                                                        self.gender_predictions,
+                                                        "") #temporary empty string
+        self.stacked_widget.setCurrentWidget(self.amusement_park_page)

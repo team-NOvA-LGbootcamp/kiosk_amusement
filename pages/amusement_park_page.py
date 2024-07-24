@@ -29,7 +29,7 @@ class AmusementParkPage(QWidget):
         intro_widget.setLayout(intro_layout)
         intro_text_label = QLabel("NOvA Park에 오신 것을 환영합니다.\n아래 어트랙션을 추천드려요!", self)
         intro_text_label.setAlignment(Qt.AlignTop | Qt.AlignCenter)
-        intro_text_label.setStyleSheet("font-size: 32px; font-weight: bold; color: #F08080")
+        intro_text_label.setObjectName('attraction_guide_label')
         intro_layout.addWidget(intro_text_label)
 
         # Recommendation 영역       
@@ -37,13 +37,6 @@ class AmusementParkPage(QWidget):
         recommendation_widget.setObjectName("outer_recommendation_widget")  # objectName 지정
         recommendation_layout = QHBoxLayout()
         recommendation_widget.setLayout(recommendation_layout)
-        recommendation_widget.setStyleSheet("""
-            QWidget#outer_recommendation_widget {
-                border: 1.5px solid #F08080;  /* 테두리 스타일 및 색상 설정 */
-                border-radius: 6px;        /* 테두리 둥글기 설정 */
-                box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.8);  /* 그림자 효과 설정 */
-            }
-        """)
         
         loading_label = QLabel()
         loading_label.setFixedSize(int(self.width()*0.15), int(self.width()*0.15))
@@ -136,7 +129,7 @@ class AmusementParkPage(QWidget):
 
             ride_name = " ".join([word.title() for word in res.split("_")])
             title_label = QLabel(f"{i+1}: {ride_name}\n대기시간: {35*(i+1)}분")
-            title_label.setStyleSheet("font-size: 20px; color: #953553")
+            title_label.setObjectName('attraction_time_label')
             title_label.setAlignment(Qt.AlignTop | Qt.AlignCenter)
             box_layout.addWidget(title_label)
 

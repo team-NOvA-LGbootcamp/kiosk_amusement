@@ -25,7 +25,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     with open("style.qss", "r", encoding='utf-8') as f:
         stylesheet = f.read()
-    load_fonts('./resources/fonts/HSSanTokki2.0(2024).ttf')
+    load_fonts('./resources/fonts/Cafe24Dongdong-v2.0.ttf')
     
     app.setStyleSheet(stylesheet)
     main_window = MainWindow(model, relation_model, _env)

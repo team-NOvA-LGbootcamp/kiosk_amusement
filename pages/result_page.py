@@ -10,7 +10,7 @@ class MultiResultPage(QWidget):
         super().__init__()
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
-        self.width = width
+        self.window_width = width
 
         # 상단 레이아웃 (얼굴 사진 및 나이/성별 예측 결과)
         self.top_layout = QVBoxLayout()
@@ -62,6 +62,7 @@ class MultiResultPage(QWidget):
         # 얼굴 사진 및 나이/성별 예측 결과 추가
         face_list_widget = QWidget()
         face_list_layout = QHBoxLayout()
+        num_faces = len(age_predictions.keys())
         for face_id, face_img in detected_faces.items():
             gender = gender_predictions[face_id]
             age = age_predictions[face_id]
@@ -69,7 +70,7 @@ class MultiResultPage(QWidget):
 
             # 이미지 크기 조정: 얼굴 크기에 따라 적절한 크기로 조정
             height, width, _ = face_img.shape
-            scale_factor = min(50 / width, 50 / height)  # 크기를 절반으로 줄임
+            scale_factor = (self.window_width / width)  # 크기를 절반으로 줄임
             new_width = int(width * scale_factor)
             new_height = int(height * scale_factor)
             face_img = cv2.resize(face_img, (new_width, new_height))
@@ -80,9 +81,10 @@ class MultiResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.width*0.1, self.width*0.1, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.3/num_faces, self.window_width*0.3/num_faces, Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
+            info_label.setObjectName('info_label')
             info_label.setAlignment(Qt.AlignCenter)
             info_label.setTextFormat(Qt.RichText)  # HTML 형식으로 설정
 
@@ -122,6 +124,7 @@ class MultiResultPage(QWidget):
             relation_text = f"{relation_labels.get(relation, 'Unknown')}: {prob*100:.2f}%"
             relation_button.setText(relation_text)
             relation_button.setStyleSheet("text-align: left;")  # 텍스트가 아이콘 오른쪽에 위치하도록 설정
+            relation_button.setFixedHeight(100)
 
             relation_button.clicked.connect(lambda _, r=relation: self.relation_clicked.emit(r))
             self.results_layout.addWidget(relation_button)
@@ -163,7 +166,7 @@ class SingleResultPage(QWidget):
 
             # 이미지 크기 조정
             height, width, _ = face_img.shape
-            scale_factor = min(self.window_width*0.2 / width, self.window_width*0.2 / height)
+            scale_factor = self.window_width*0.2 / width
             new_width = int(width * scale_factor)
             new_height = int(height * scale_factor)
             face_img = cv2.resize(face_img, (new_width, new_height))
@@ -174,9 +177,10 @@ class SingleResultPage(QWidget):
             height, width, channel = face_img.shape
             bytes_per_line = 3 * width
             q_img = QImage(face_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.2, self.window_width*0.2, Qt.KeepAspectRatio))
+            img_label.setPixmap(QPixmap.fromImage(q_img).scaled(self.window_width*0.3, self.window_width*0.3, Qt.KeepAspectRatio))
 
             info_label = QLabel(f"나이: {age}<br>성별: {gender_text}")
+            info_label.setObjectName('info_label')
             info_label.setAlignment(Qt.AlignCenter)
             info_label.setTextFormat(Qt.RichText)
 
@@ -192,9 +196,11 @@ class SingleResultPage(QWidget):
         recommend_button = QPushButton("이 정보로 추천 받기")
         recommend_button.setObjectName("recommend_button")
         recommend_button.clicked.connect(self.single_clicked.emit)
-        recommend_button.setFixedSize(300, 50)
-
-        self.top_layout.addWidget(recommend_button, alignment=Qt.AlignCenter)
+        recommend_button.setFixedHeight(100)
+        self.top_layout.addWidget(recommend_button)
+        under_bar = QLabel()
+        under_bar.setFixedHeight(100)
+        self.top_layout.addWidget(under_bar)
 
     def clear_all_layouts(self):
         # 상단 레이아웃 정리
