@@ -5,6 +5,19 @@ from recommendation import RecommendationAlgorithm
 import os
 import random
 
+
+rides_name = {
+    "bumper_cars": "범퍼카",
+    "ferris_wheel": "대관람차",
+    "haunted_house": "귀신의 집",
+    "merry_go_round": "회전목마",
+    "roller_coaster": "롤러코스터",
+    "safari": "사파리",
+    "swing_ride": "회전그네",
+    "themepark_train": "레일기차",
+    "viking": "바이킹"
+}
+
 class AmusementParkPage(QWidget):
     recommendation_complete = pyqtSignal()
 
@@ -53,9 +66,8 @@ class AmusementParkPage(QWidget):
         parkmap_widget = QWidget()
         parkmap_layout = QVBoxLayout()
         parkmap_widget.setLayout(parkmap_layout)
-
         parkmap_label = QLabel()
-        parkmap_label.setPixmap(QPixmap("./resources/icons/park.png").scaledToWidth(self.width()))
+        parkmap_label.setPixmap(QPixmap("./resources/icons/park.png").scaled(self.width(), self.width()))
         parkmap_label.setScaledContents(True)
         parkmap_label.setAlignment(Qt.AlignTop)
         parkmap_layout.addWidget(parkmap_label)
@@ -73,7 +85,7 @@ class AmusementParkPage(QWidget):
         # Park Map에 ghost 이미지 추가
         icon2_label = QLabel(parkmap_widget)
         icon2_label.setFixedSize(int(self.width()*0.08), int(self.width()*0.08))
-        icon2_label.setPixmap(QPixmap("./resources/icons/ghost.png").scaled(int(self.width()*0.08), int(self.width()*0.08)))
+        icon2_label.setPixmap(QPixmap("./resources/icons/ghost.png").scaled(self.width()*0.08, self.width()*0.08))
         icon2_label.move(int(self.width()*0.52), int(self.height()*0.3)) # 이미지 위치 설정
         
         # QR코드 영역
@@ -126,9 +138,8 @@ class AmusementParkPage(QWidget):
             box.setLayout(box_layout)
             box_layout.setContentsMargins(0,0,0,0)
 
-            ride_name = " ".join([word.title() for word in res.split("_")])
-            num = random.randrange(1, 6)
-            title_label = QLabel(f"{i+1}: {ride_name}\n대기시간: {num*25}분")
+            num = random.randrange(2, 10)
+            title_label = QLabel(f"{i+1}: {rides_name[res]}\n대기시간: {num*15}분")
             title_label.setObjectName('attraction_time_label')
             title_label.setAlignment(Qt.AlignTop | Qt.AlignCenter)
             box_layout.addWidget(title_label)
@@ -149,10 +160,8 @@ class AmusementParkPage(QWidget):
         if os.path.exists(photo_path):
             pixmap = QPixmap(photo_path)
             self.photo_label.setPixmap(pixmap.scaled(self.width()*0.6, self.width()*0.4))
-            self.photo_label.setAlignment(Qt.AlignCenter)
         if os.path.exists(qr_path):
             pixmap_2 = QPixmap(qr_path)
-            self.qrcode_label.setPixmap(pixmap_2.scaled(self.width()*0.15, self.width()*0.15))
-            self.qrcode_label.setAlignment(Qt.AlignCenter)
+            self.qrcode_label.setPixmap(pixmap_2.scaled(self.width()*0.2, self.width()*0.2))
 
         
