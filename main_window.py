@@ -155,14 +155,14 @@ class MainWindow(QMainWindow):
                 overlay = Image.open(overlay_info["path"]).resize(overlay_info["size"], Image.LANCZOS)
                 pil_image.paste(overlay, overlay_info["position"], overlay)
 
-            # 현재 날짜와 시간
+            # 현재 날짜와 시간 
             date_time_str = datetime.now().strftime('%Y-%m-%d %H:%M')
 
             # 폰트 및 색상 설정
             fonts = {
                 "digital": ImageFont.truetype("./resources/fonts/digital_font.ttf", 30),
-                "namu": ImageFont.truetype("./resources/fonts/HSSanTokki2.0(2024).ttf", 50),
-                "nova": ImageFont.truetype("./resources/fonts/HSSanTokki2.0(2024).ttf", 15)
+                "namu": ImageFont.truetype("./resources/fonts/Cafe24Dongdong-v2.0.ttf", 50),
+                "nova": ImageFont.truetype("./resources/fonts/Cafe24Dongdong-v2.0.ttf", 15)
             }
             
             colors = {
