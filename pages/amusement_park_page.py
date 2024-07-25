@@ -199,5 +199,5 @@ class AmusementParkPage(QWidget):
             self.photozone_layout.addWidget(self.photo_label)
         if os.path.exists(qr_path):
             pixmap_2 = QPixmap(qr_path)
-            self.qrcode_label.setPixmap(pixmap_2.scaled(qr_size_w, qr_size_h))
+            self.qrcode_label.setPixmap(pixmap_2.scaled(int(qr_size_w), int(qr_size_h)))
             self.photozone_layout.addWidget(self.qrcode_label)

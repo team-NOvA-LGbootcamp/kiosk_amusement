@@ -169,9 +169,10 @@ class MainWindow(QMainWindow):
     def deco_frame(self,cv2_image):
         try:
             one, two= random.sample(range(1, 10), 2)
+            size = 150
             overlays = [
-            {"path": f"./resources/icons/deco1.png", "position": (0, 300), "size": (180, 180)},
-            {"path": f"./resources/icons/deco2.png", "position": (460, 300), "size": (180, 180)}
+            {"path": f"./resources/icons/deco{one}.png", "position": (0, 480-size), "size": (size, size)},
+            {"path": f"./resources/icons/deco{two}.png", "position": (640-size, 480-size), "size": (size, size)}
 ]
             # BGR을 RGB로 변환하고 PIL 이미지로 변환
             cv2_image_rgb = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
@@ -182,7 +183,7 @@ class MainWindow(QMainWindow):
 
             # 오버레이 추가
             for overlay_info in overlays:
-                overlay = Image.open(overlay_info["path"]).resize(overlay_info["size"], Image.LANCZOS)
+                overlay = Image.open(overlay_info["path"]).resize(overlay_info["size"], Image.LANCZOS).convert("RGBA")
                 pil_image.paste(overlay, overlay_info["position"], overlay)
 
             # 현재 날짜와 시간 
