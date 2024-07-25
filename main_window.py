@@ -309,7 +309,6 @@ class MainWindow(QMainWindow):
         delete_img_url_thread = threading.Thread(target=self.delete_img_url)
         delete_img_url_thread.start()
         self.button_press.play()
-        self.delete_img_url()
         self.stacked_widget.setCurrentWidget(self.start_page)
         self.result_page_multiple.clear_all_layouts()
         self.result_page_single.clear_all_layouts
@@ -327,7 +326,6 @@ class MainWindow(QMainWindow):
 
     def handle_single_clicked(self):
         self.button_press.play()
-        self.generate_qr(self.camera_widget.frame_save)
         self.amusement_park_page.make_recommendation(self.age_predictions,
                                                         self.gender_predictions,
                                                         "") #temporary empty string
